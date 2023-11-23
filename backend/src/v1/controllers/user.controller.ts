@@ -28,14 +28,69 @@ export async function register(req: Request, res: Response): Promise<void> {
       registrationDate: userSaved.register_date,
     });
   } catch (error: any) {
-    res
-      .status(500)
-      .json({
-        message: error.message !== undefined || 'Internal Server Error',
-      });
+    res.status(500).json({
+      message: error.message !== undefined || 'Internal Server Error',
+    });
   }
 }
 
 export async function login(req: Request, res: Response): Promise<void> {
-  res.send('login');
+  const { email, password } = req.body;
+
+  try {
+    const userFound = await User.findOne({ email });
+
+    if (userFound == null) {
+      res.status(400).json({ message: 'User not found' });
+      return;
+    }
+
+    const isMatch = await bcrypt.compare(password, userFound.password);
+
+    if (isMatch == null || !isMatch) {
+      res.status(400).json({ message: 'Incorrect password' });
+      return;
+    }
+
+    const token = await createAccessToken({ id: userFound._id });
+
+    res.cookie('token', token);
+    res.json({
+      id: userFound._id,
+      username: userFound.username,
+      email: userFound.email,
+      name: userFound.name,
+      registrationDate: userFound.register_date,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: error.message !== undefined || 'Internal Server Error',
+    });
+  }
+}
+
+export async function logout(req: Request, res: Response): Promise<void> {
+  res.cookie('token', '', {
+    expires: new Date(0),
+  });
+  res.sendStatus(200);
+}
+
+export async function profile(req: any, res: Response): Promise<void> {
+  const userFound = User.findById(req.user.id);
+
+  if (userFound == null) {
+    res.status(400).json({ message: 'User not found' });
+    return;
+  }
+  /* no se porque no detecta los atributos _id, username, etc...
+  res.json({
+    id: userFound._id,
+    username: userFound.username,
+    email: userFound.email,
+    name: userFound.name,
+    registrationDate: userFound.register_date,
+  });
+  */
+  res.status(200).json({ message: 'User found' });
 }

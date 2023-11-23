@@ -1,3 +1,4 @@
+import cookieParser from 'cookie-parser';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
 
@@ -8,6 +9,7 @@ const app: Express = express();
 // middlewares
 app.use(express.json());
 app.use(morgan('dev'));
+app.use(cookieParser());
 app.use(userRoutes);
 
 // routes
