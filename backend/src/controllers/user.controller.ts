@@ -47,7 +47,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     const isMatch = await bcrypt.compare(password, userFound.password);
 
-    if (isMatch == null || !isMatch) {
+    if (isMatch == null || isMatch === undefined) {
       res.status(400).json({ message: 'Incorrect password' });
       return;
     }

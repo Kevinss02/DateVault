@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-import { TOKEN_SECRET } from '../../config.js';
+import { TOKEN_SECRET } from '../config.js';
 
 export async function createAccessToken(payload: any): Promise<string> {
   return await new Promise((resolve, reject) => {
