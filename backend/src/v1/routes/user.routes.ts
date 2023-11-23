@@ -6,8 +6,8 @@ import {
   logout,
   profile,
   register,
-} from '../controllers/user.controller.js';
-import { authRequired } from '../middlewares/validateToken.js';
+} from '../../controllers/user.controller.js';
+import { authRequired } from '../../middlewares/validateToken.js';
 
 const router = Router();
 

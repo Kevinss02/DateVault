@@ -1,7 +1,7 @@
 import { type NextFunction, type Response } from 'express';
 import jwt from 'jsonwebtoken';
 
-import { TOKEN_SECRET } from '../../config.js';
+import { TOKEN_SECRET } from '../config.js';
 
 export function authRequired(
   req: any,
