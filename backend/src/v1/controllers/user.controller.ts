@@ -77,13 +77,13 @@ export async function logout(req: Request, res: Response): Promise<void> {
 }
 
 export async function profile(req: any, res: Response): Promise<void> {
-  const userFound = User.findById(req.user.id);
+  const userFound = await User.findById(req.user.id);
 
   if (userFound == null) {
     res.status(400).json({ message: 'User not found' });
     return;
   }
-  /* no se porque no detecta los atributos _id, username, etc...
+
   res.json({
     id: userFound._id,
     username: userFound.username,
@@ -91,6 +91,4 @@ export async function profile(req: any, res: Response): Promise<void> {
     name: userFound.name,
     registrationDate: userFound.register_date,
   });
-  */
-  res.status(200).json({ message: 'User found' });
 }
