@@ -2,11 +2,11 @@ import type React from 'react';
 import FloatingLabel from 'react-bootstrap/FloatingLabel';
 import Form from 'react-bootstrap/Form';
 
-interface LoginFormProps {
+interface SignUpFormProps {
   onSubmit: () => void;
 }
 
-function LoginForm({ onSubmit }: LoginFormProps): React.JSX.Element {
+function SignUpForm({ onSubmit }: SignUpFormProps): React.JSX.Element {
   return (
     <form className='font-cute text-neutral-300'>
       <div className='mb-10 mt-8 text-center'>
@@ -47,21 +47,15 @@ function LoginForm({ onSubmit }: LoginFormProps): React.JSX.Element {
             type='button'
             onClick={onSubmit} // Call the onSubmit function on button click
           >
-            Log in
+            Sign Up
           </button>
 
           {/* Forgot password link */}
           <a href='#!'>Forgot password?</a>
         </div>
       </div>
-
-      {/* Register button */}
-      <div className='flex items-center justify-between pb-6'>
-        <p className='mb-0 me-10'>Don&apos;t have an account?</p>
-        <button type='button'>Register</button>
-      </div>
     </form>
   );
 }
 
-export default LoginForm;
+export default SignUpForm;
