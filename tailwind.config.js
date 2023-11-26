@@ -8,6 +8,13 @@ export default {
         'custom-pastel': '#FFDFD3',
         'custom-pink': '#F0A6CA',
         'custom-purple': '#9C89B8',
+        'custom-darker-pastel': '#FFC0B3', // Ajustado a un tono más oscuro
+        'custom-darker-pink': '#E078A9', // Ajustado a un tono más oscuro
+        'custom-darker-purple': '#745A8C', // Ajustado a un tono más oscuro
+      },
+      spacing: {
+        46: '184px',
+        45: '180px',
       },
     },
   },
