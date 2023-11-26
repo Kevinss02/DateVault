@@ -6,7 +6,8 @@ export default {
       colors: {
         'gray-750': 'rgb(31, 41, 68)',
         'custom-pastel': '#FFDFD3',
-        'custom-pink': '#f0a6ca',
+        'custom-pink': '#F0A6CA',
+        'custom-purple': '#9C89B8',
       },
     },
   },
