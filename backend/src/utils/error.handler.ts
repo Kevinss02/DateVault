@@ -4,7 +4,7 @@ import type {
   ResponseType,
 } from './types/response.type.js';
 
-export function handleHttp<T, E>(
+export const handleHttp = function <T, E>(
   type: OpTypes,
   output: T,
   error?: E,
@@ -21,4 +21,4 @@ export function handleHttp<T, E>(
         success: true,
         output,
       };
-}
+};

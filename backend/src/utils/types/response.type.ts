@@ -1,6 +1,9 @@
 export type OpTypes =
   | 'registerUser'
+  | 'loginUser'
+  | 'profileUser'
   | 'zodValidation'
+  | 'tokenValidation'
   | 'get'
   | 'add'
   | 'update'

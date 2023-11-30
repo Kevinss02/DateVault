@@ -1,13 +1,18 @@
-import bcrypt from 'bcryptjs';
 import { type Request, type Response } from 'express';
 
-import { createAccessToken } from '../libs/jwt.js';
 import User from '../models/user.model.js';
-import { registerUser } from '../services/user.service.js';
+import { loginUser, registerUser } from '../services/user.service.js';
 import { handleHttp } from '../utils/error.handler.js';
-import { type UserData, type UserDataResponse } from '../utils/types/types.js';
+import {
+  type LoginDataResponse,
+  type UserData,
+  type UserDataResponse,
+} from '../utils/types/types.js';
 
-export async function register(req: Request, res: Response): Promise<void> {
+export const register = async function (
+  req: Request,
+  res: Response,
+): Promise<void> {
   const { username, email, password, name }: UserData = req.body;
 
   try {
@@ -50,64 +55,138 @@ export async function register(req: Request, res: Response): Promise<void> {
         );
     }
   }
-}
+};
 
-export async function login(req: Request, res: Response): Promise<void> {
-  const { email, password } = req.body;
+export const login = async function (
+  req: Request,
+  res: Response,
+): Promise<void> {
+  const { email, password }: UserData = req.body;
 
   try {
-    const userFound = await User.findOne({ email });
+    const result = await loginUser({ email, password });
 
-    if (userFound == null) {
-      res.status(400).json({ message: 'User not found' });
-      return;
-    }
+    const { user, token } = result;
 
-    const isMatch = await bcrypt.compare(password, userFound.password);
-
-    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
-    if (isMatch == null || isMatch === undefined || !isMatch) {
-      res.status(400).json({ message: 'Incorrect password' });
-      return;
-    }
-
-    const token = await createAccessToken({ id: userFound._id });
+    const loginDataResponse: LoginDataResponse = {
+      id: user.id,
+      email: user.email,
+      registrationDate: user.registrationDate,
+    };
 
     res.cookie('token', token);
-    res.json({
-      id: userFound._id,
-      username: userFound.username,
-      email: userFound.email,
-      name: userFound.name,
-      registrationDate: userFound.register_date,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      message: error.message !== undefined || 'Internal Server Error',
-    });
-  }
-}
+    res.status(201).json(handleHttp('loginUser', loginDataResponse));
+  } catch (error) {
+    console.error('Registration error:', error);
 
-export async function logout(req: Request, res: Response): Promise<void> {
+    if (error instanceof Error) {
+      if (error.message === 'Invalid password') {
+        res
+          .status(401)
+          .json(
+            handleHttp(
+              'loginUser',
+              { params: req.params, body: req.body },
+              error.message,
+            ),
+          );
+      } else if (error.message === 'User not found') {
+        res
+          .status(404)
+          .json(
+            handleHttp(
+              'loginUser',
+              { params: req.params, body: req.body },
+              error.message,
+            ),
+          );
+      } else {
+        res
+          .status(500)
+          .json(
+            handleHttp(
+              'loginUser',
+              { params: req.params, body: req.body },
+              `Unexpected error: ${error as any}`,
+            ),
+          );
+      }
+    } else {
+      res
+        .status(500)
+        .json(
+          handleHttp(
+            'loginUser',
+            { params: req.params, body: req.body },
+            `Unexpected error: ${error as any}`,
+          ),
+        );
+    }
+  }
+};
+
+export const logout = async function (
+  req: Request,
+  res: Response,
+): Promise<void> {
   res.cookie('token', '', {
     expires: new Date(0),
   });
   res.sendStatus(200);
-}
+};
 
-export async function profile(req: any, res: Response): Promise<void> {
-  const userFound = await User.findById(req.user.id);
+export const profile = async function (req: any, res: Response): Promise<void> {
+  try {
+    const userFound = await User.findById(req.user.id);
 
-  if (userFound == null) {
-    res.status(400).json({ message: 'User not found' });
-    return;
+    if (userFound == null) {
+      throw new Error('User not found');
+    }
+
+    res.status(201).json(
+      handleHttp('profileUser', {
+        id: userFound._id,
+        username: userFound.username,
+        email: userFound.email,
+        name: userFound.name,
+        registrationDate: userFound.register_date,
+      }),
+    );
+  } catch (error) {
+    console.error('Profile error:', error);
+
+    if (error instanceof Error) {
+      if (error.message === 'User not found') {
+        res
+          .status(404)
+          .json(
+            handleHttp(
+              'profileUser',
+              { params: req.params, body: req.body },
+              'Error: User not found',
+            ),
+          );
+      } else {
+        res
+          .status(500)
+          .json(
+            handleHttp(
+              'profileUser',
+              { params: req.params, body: req.body },
+              `Unexpected error: ${error as any}`,
+            ),
+          );
+      }
+    } else {
+      res
+        .status(500)
+        .json(
+          handleHttp(
+            'profileUser',
+            { params: req.params, body: req.body },
+            `Unexpected error: ${error as any}`,
+          ),
+        );
+    }
   }
-
-  res.json({
-    id: userFound._id,
-    username: userFound.username,
-    email: userFound.email,
-    name: userFound.name,
-    registrationDate: userFound.register_date,
-  });
-}
+};
