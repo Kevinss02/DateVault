@@ -3,34 +3,52 @@ import { type Request, type Response } from 'express';
 
 import { createAccessToken } from '../libs/jwt.js';
 import User from '../models/user.model.js';
+import { registerUser } from '../services/user.service.js';
+import { handleHttp } from '../utils/error.handler.js';
+import { type UserData, type UserDataResponse } from '../utils/types/types.js';
 
 export async function register(req: Request, res: Response): Promise<void> {
-  const { username, email, password, name } = req.body;
+  const { username, email, password, name }: UserData = req.body;
+
   try {
-    const passwordHash = await bcrypt.hash(password, 10);
+    const result = await registerUser({ username, email, password, name });
 
-    const newUser = new User({
-      username,
-      email,
-      password: passwordHash,
-      name,
-    });
+    const { user, token } = result;
 
-    const userSaved = await newUser.save();
-    const token = await createAccessToken({ id: userSaved._id });
+    const userDataResponse: UserDataResponse = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      name: user.name,
+      registrationDate: user.registrationDate,
+    };
 
     res.cookie('token', token);
-    res.json({
-      id: userSaved._id,
-      username: userSaved.username,
-      email: userSaved.email,
-      name: userSaved.name,
-      registrationDate: userSaved.register_date,
-    });
-  } catch (error: any) {
-    res.status(500).json({
-      message: error.message !== undefined || 'Internal Server Error',
-    });
+    res.status(201).json(handleHttp('registerUser', userDataResponse));
+  } catch (error) {
+    console.error('Registration error:', error);
+
+    if (error instanceof Error) {
+      res
+        .status(400)
+        .json(
+          handleHttp(
+            'registerUser',
+            { params: req.params, body: req.body },
+            error.message,
+          ),
+        );
+    } else {
+      res
+        .status(500)
+        .json(
+          handleHttp(
+            'registerUser',
+            { params: req.params, body: req.body },
+            `Unexpected error: ${error as any}`,
+          ),
+        );
+    }
   }
 }
 
@@ -47,6 +65,7 @@ export async function login(req: Request, res: Response): Promise<void> {
 
     const isMatch = await bcrypt.compare(password, userFound.password);
 
+    // eslint-disable-next-line @typescript-eslint/strict-boolean-expressions
     if (isMatch == null || isMatch === undefined || !isMatch) {
       res.status(400).json({ message: 'Incorrect password' });
       return;

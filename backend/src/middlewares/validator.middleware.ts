@@ -1,18 +1,36 @@
 import { type NextFunction, type Request, type Response } from 'express';
 import { ZodError, type z } from 'zod';
 
-export const validateSchema = (schema: z.ZodObject<any, any, any, any>) => {
-  return (req: Request, res: Response, next: NextFunction) => {
+import { handleHttp } from '../utils/error.handler.js';
+
+export const validateSchema = function (
+  schema: z.ZodObject<any, any, any, any>,
+) {
+  return async function (req: Request, res: Response, next: NextFunction) {
     try {
-      schema.parse(req.body);
+      await schema.parseAsync(req.body);
       next();
     } catch (error) {
       if (error instanceof ZodError) {
-        return res
-          .status(400)
-          .json({ error: error.errors.map((error) => error.message) });
+        console.error('Validation error:', error.errors);
+        return res.status(400).json(
+          handleHttp(
+            'zodValidation',
+            { params: req.params, body: req.body },
+            error.errors.map((error) => error.message),
+          ),
+        );
       } else {
-        return res.status(500).json({ error: 'Internal Server Error' });
+        console.error('Internal server error:', error);
+        return res
+          .status(500)
+          .json(
+            handleHttp(
+              'zodValidation',
+              { params: req.params, body: req.body },
+              'Internal Server Error',
+            ),
+          );
       }
     }
   };
