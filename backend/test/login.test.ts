@@ -72,4 +72,50 @@ describe('login', () => {
       },
     });
   });
+
+  it('should receive user not found', async () => {
+    const response = await request(app)
+      .post('/login')
+      .send({
+        email: 'notauser@gmail.com',
+        password: '1234567',
+      })
+      .expect(404);
+
+    expect(response.body).toEqual({
+      type: 'loginUser',
+      success: false,
+      output: {
+        params: {},
+        body: {
+          email: 'notauser@gmail.com',
+          password: '1234567',
+        },
+      },
+      error: 'User not found',
+    });
+  });
+
+  it('should receive incorrect password', async () => {
+    const response = await request(app)
+      .post('/login')
+      .send({
+        email: 'shadow77@gmail.com',
+        password: 'notmypassword',
+      })
+      .expect(401);
+
+    expect(response.body).toEqual({
+      type: 'loginUser',
+      success: false,
+      output: {
+        params: {},
+        body: {
+          email: 'shadow77@gmail.com',
+          password: 'notmypassword',
+        },
+      },
+      error: 'Invalid password',
+    });
+  });
 });
