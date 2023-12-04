@@ -109,7 +109,7 @@ function SignUpForm(): React.JSX.Element {
           {...register('name', {
             required: { value: true, message: 'Full name is required' },
             pattern: {
-              value: /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/,
+              value: /^[\p{L}\p{M}'\s-]+$/u,
               message: 'Invalid full name',
             },
             minLength: {

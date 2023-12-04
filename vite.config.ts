@@ -1,7 +1,16 @@
 import react from '@vitejs/plugin-react-swc';
-import { defineConfig } from 'vite';
+import { defineConfig as defineViteConfig, mergeConfig } from 'vite';
+import { defineConfig as defineVitestConfig } from 'vitest/config';
 
-// https://vitejs.dev/config/
-export default defineConfig({
+const viteConfig = defineViteConfig({
   plugins: [react()],
 });
+
+const vitestConfig = defineVitestConfig({
+  test: {
+    globals: true,
+    environment: 'jsdom',
+  },
+});
+
+export default mergeConfig(viteConfig, vitestConfig);
