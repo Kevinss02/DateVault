@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-misused-promises */
 import { Router } from 'express';
 
 import {
@@ -9,7 +8,8 @@ import {
 } from '../../controllers/user.controller.js';
 import { authRequired } from '../../middlewares/validateToken.js';
 import { validateSchema } from '../../middlewares/validator.middleware.js';
-import { loginSchema, registerSchema } from '../../schemas/register.schema.js';
+import { loginSchema } from '../../schemas/login.schema.js';
+import { registerSchema } from '../../schemas/register.schema.js';
 
 const router = Router();
 
