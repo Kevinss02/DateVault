@@ -1,9 +1,17 @@
 import request from 'supertest';
-import { describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 import app from '../src/app.js';
+import { connectDB } from '../src/database/db.js';
+import User from '../src/models/user.model.js';
+
+void connectDB();
 
 describe('register', () => {
+  beforeEach(async () => {
+    await User.deleteOne({ username: 'test_user' });
+  });
+
   it('should give attribute missing error', async () => {
     const response = await request(app)
       .post('/register')
@@ -56,7 +64,6 @@ describe('register', () => {
     });
   });
 
-  /**
   it('should register user successfuly', async () => {
     const response = await request(app)
       .post('/register')
@@ -72,13 +79,26 @@ describe('register', () => {
       type: 'registerUser',
       success: true,
       output: {
-        id: '656de84d1f891f154eb435c5',
         username: 'test_user',
         email: 'someguy@gmail.com',
         name: 'Some random guy',
-        registrationDate: '2023-12-04T14:55:09.142Z',
+        id: expect.any(String),
+        registrationDate: expect.any(String),
       },
     });
   });
-  */
+
+  it('should fail because duplicated user', async () => {
+    const response = await request(app)
+      .post('/register')
+      .send({
+        username: 'username',
+        name: 'user name',
+        email: 'username@gmail.com',
+        password: 'somewhat123',
+      })
+      .expect(400);
+
+    expect(response.text).toContain('"success":false');
+  });
 });

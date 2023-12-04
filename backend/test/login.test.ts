@@ -2,6 +2,9 @@ import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 
 import app from '../src/app.js';
+import { connectDB } from '../src/database/db.js';
+
+void connectDB();
 
 describe('login', () => {
   it('should give attribute missing error', async () => {
@@ -48,7 +51,6 @@ describe('login', () => {
     });
   });
 
-  /**
   it('should login user successfuly', async () => {
     const response = await request(app)
       .post('/login')
@@ -70,5 +72,4 @@ describe('login', () => {
       },
     });
   });
-  */
 });
