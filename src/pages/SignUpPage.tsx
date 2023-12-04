@@ -4,7 +4,7 @@ import SignUpForm from '../components/SignUpForm';
 
 function SignUpPage(): React.JSX.Element {
   return (
-    <section className='flex items-center justify-center bg-custom-purple'>
+    <section className='flex h-screen items-center justify-center bg-custom-purple'>
       <div className='my-5 rounded-3xl bg-neutral-900'>
         <div className='p-10'>
           <div className='flex flex-wrap items-center justify-center text-neutral-800 dark:text-neutral-200'>

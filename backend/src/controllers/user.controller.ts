@@ -2,12 +2,8 @@ import { type Request, type Response } from 'express';
 
 import User from '../models/user.model.js';
 import { loginUser, registerUser } from '../services/user.service.js';
-import { handleHttp } from '../utils/error.handler.js';
-import {
-  type LoginDataResponse,
-  type UserData,
-  type UserDataResponse,
-} from '../utils/types/types.js';
+import { handleHttp, parseMongoErr } from '../utils/error.handler.js';
+import { type UserData, type UserDataResponse } from '../utils/types/types.js';
 
 export const register = async function (
   req: Request,
@@ -34,15 +30,28 @@ export const register = async function (
     console.error('Registration error:', error);
 
     if (error instanceof Error) {
-      res
-        .status(400)
-        .json(
-          handleHttp(
-            'registerUser',
-            { params: req.params, body: req.body },
-            error.message,
-          ),
-        );
+      if (error.name === 'MongoServerError') {
+        const parsedError = parseMongoErr(error.message);
+        res
+          .status(400)
+          .json(
+            handleHttp(
+              'registerUser',
+              { params: req.params, body: req.body },
+              parsedError,
+            ),
+          );
+      } else {
+        res
+          .status(400)
+          .json(
+            handleHttp(
+              'registerUser',
+              { params: req.params, body: req.body },
+              error.message,
+            ),
+          );
+      }
     } else {
       res
         .status(500)
@@ -68,16 +77,18 @@ export const login = async function (
 
     const { user, token } = result;
 
-    const loginDataResponse: LoginDataResponse = {
+    const loginDataResponse: UserDataResponse = {
       id: user.id,
       email: user.email,
       registrationDate: user.registrationDate,
+      username: user.username,
+      name: user.name,
     };
 
     res.cookie('token', token);
     res.status(201).json(handleHttp('loginUser', loginDataResponse));
   } catch (error) {
-    console.error('Registration error:', error);
+    console.error('Login error:', error);
 
     if (error instanceof Error) {
       if (error.message === 'Invalid password') {

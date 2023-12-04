@@ -5,71 +5,47 @@ export const registerSchema = z.object({
     .string({
       required_error: 'Username is required',
     })
-    .min(4, {
-      message: 'Username must be at least 4 characters',
+    .min(2, {
+      message: 'Username must be at least 2 characters',
+    })
+    .max(20, {
+      message: 'Username must not exceed 20 characters',
+    })
+    .refine((value) => /^[a-zA-Z0-9_-]+$/.test(value), {
+      message: 'Username can only contain letters, numbers, _, -',
+    }),
+  name: z
+    .string({
+      required_error: 'Full name is required',
+    })
+    .min(2, {
+      message: 'Full name must be at least 2 characters',
+    })
+    .max(77, {
+      message: 'Full name must not exceed 77 characters',
+    })
+    .refine((value) => /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/.test(value), {
+      message: 'Invalid full name',
     }),
   email: z
     .string({
       required_error: 'Email is required',
     })
-    .email({
-      message: 'Invalid email',
-    }),
+    .refine(
+      (value) =>
+        /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/.test(value),
+      {
+        message: 'Invalid email',
+      },
+    ),
   password: z
     .string({
-      required_error: 'Password is requiered',
+      required_error: 'Password is required',
     })
     .min(6, {
       message: 'Password must be at least 6 characters',
+    })
+    .max(20, {
+      message: 'Password must not exceed 20 characters',
     }),
-  name: z.string({
-    required_error: 'Name is requiered',
-  }),
 });
-
-/*
-import ajvModule from 'ajv';
-
-import { USER_ROLES } from '../utils/constants.js';
-
-const Ajv = ajvModule.default;
-
-const ajv = new Ajv({ allErrors: true });
-
-ajv.addFormat('objectid', (data) => {
-  return typeof data === 'string' && /^[0-9a-fA-F]{24}$/.test(data);
-});
-
-ajv.addFormat('email', (data) => {
-  return typeof data === 'string' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data);
-});
-
-const registerSchema = {
-  type: 'object',
-  properties: {
-    _id: { type: 'string', format: 'objectid' },
-    username: { type: 'string' },
-    email: { type: 'string', format: 'email' },
-    password: {
-      type: 'string',
-      minLength: 6,
-      pattern: '^(?=.*[a-zA-Z])(?=.*[0-9])'
-    },
-    nombre: { type: 'string' },
-    fecha_registro: { type: 'number' },
-    roles: { type: 'array', items: { type: 'string', enum: USER_ROLES } },
-    activo: { type: 'boolean' },
-  },
-  required: [
-    'username',
-    'email',
-    'password',
-    'nombre'
-  ],
-  additionalProperties: false,
-};
-
-const validateRegister = ajv.compile(registerSchema);
-
-export default validateRegister;
-*/

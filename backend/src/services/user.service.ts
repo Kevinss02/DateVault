@@ -3,10 +3,9 @@ import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
 import User from '../models/user.model.js';
 import {
-  type LoginData,
-  type LoginDataResponse,
   type UserData,
   type UserDataResponse,
+  type UserLoginData,
 } from '../utils/types/types.js';
 
 export const registerUser = async function (
@@ -27,7 +26,7 @@ export const registerUser = async function (
 
   return {
     user: {
-      id: userSaved._id,
+      id: userSaved._id.toString(),
       username: userSaved.username,
       email: userSaved.email,
       name: userSaved.name,
@@ -38,8 +37,8 @@ export const registerUser = async function (
 };
 
 export const loginUser = async function (
-  loginData: LoginData,
-): Promise<{ user: LoginDataResponse; token: string }> {
+  loginData: UserLoginData,
+): Promise<{ user: UserDataResponse; token: string }> {
   const { email, password } = loginData;
   const userFound = await User.findOne({ email });
 
@@ -51,9 +50,11 @@ export const loginUser = async function (
 
       return {
         user: {
-          id: userFound._id,
+          id: userFound._id.toString(),
           email: userFound.email,
           registrationDate: userFound.register_date,
+          username: userFound.username,
+          name: userFound.name,
         },
         token,
       };

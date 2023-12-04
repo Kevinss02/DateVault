@@ -3,11 +3,6 @@ import type React from 'react';
 import SignInForm from '../components/SignInForm';
 
 function SignInPage(): React.JSX.Element {
-  function handleSignInSubmit(): void {
-    // Handle login logic here
-    console.log('Login submitted');
-  }
-
   return (
     <section className='flex items-center justify-center bg-custom-purple'>
       <div className='my-5 rounded-3xl bg-neutral-900'>
@@ -32,7 +27,7 @@ function SignInPage(): React.JSX.Element {
                           <span className='text-custom-pastel'>Vault</span>
                         </div>
                       </div>
-                      <SignInForm onSubmit={handleSignInSubmit} />
+                      <SignInForm />
                     </div>
                   </div>
 
