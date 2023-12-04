@@ -24,7 +24,7 @@ export const registerSchema = z.object({
     .max(77, {
       message: 'Full name must not exceed 77 characters',
     })
-    .refine((value) => /^[a-zA-Z]+(?:[\s-][a-zA-Z]+)*$/.test(value), {
+    .refine((value) => /^[\p{L}\p{M}'\s-]+$/u.test(value), {
       message: 'Invalid full name',
     }),
   email: z

@@ -8,12 +8,11 @@ import { type UserData, type UserDataResponse } from '../utils/types/types.js';
 export const register = async function (
   req: Request,
   res: Response,
-): Promise<void> {
+): Promise<any> {
   const { username, email, password, name }: UserData = req.body;
 
   try {
     const result = await registerUser({ username, email, password, name });
-
     const { user, token } = result;
 
     const userDataResponse: UserDataResponse = {
@@ -25,14 +24,14 @@ export const register = async function (
     };
 
     res.cookie('token', token);
-    res.status(201).json(handleHttp('registerUser', userDataResponse));
+    return res.status(201).json(handleHttp('registerUser', userDataResponse));
   } catch (error) {
     console.error('Registration error:', error);
 
     if (error instanceof Error) {
       if (error.name === 'MongoServerError') {
         const parsedError = parseMongoErr(error.message);
-        res
+        return res
           .status(400)
           .json(
             handleHttp(
@@ -42,7 +41,7 @@ export const register = async function (
             ),
           );
       } else {
-        res
+        return res
           .status(400)
           .json(
             handleHttp(
@@ -53,7 +52,7 @@ export const register = async function (
           );
       }
     } else {
-      res
+      return res
         .status(500)
         .json(
           handleHttp(
@@ -69,7 +68,7 @@ export const register = async function (
 export const login = async function (
   req: Request,
   res: Response,
-): Promise<void> {
+): Promise<any> {
   const { email, password }: UserData = req.body;
 
   try {
@@ -86,13 +85,13 @@ export const login = async function (
     };
 
     res.cookie('token', token);
-    res.status(201).json(handleHttp('loginUser', loginDataResponse));
+    return res.status(201).json(handleHttp('loginUser', loginDataResponse));
   } catch (error) {
     console.error('Login error:', error);
 
     if (error instanceof Error) {
       if (error.message === 'Invalid password') {
-        res
+        return res
           .status(401)
           .json(
             handleHttp(
@@ -102,7 +101,7 @@ export const login = async function (
             ),
           );
       } else if (error.message === 'User not found') {
-        res
+        return res
           .status(404)
           .json(
             handleHttp(
@@ -112,7 +111,7 @@ export const login = async function (
             ),
           );
       } else {
-        res
+        return res
           .status(500)
           .json(
             handleHttp(
@@ -123,7 +122,7 @@ export const login = async function (
           );
       }
     } else {
-      res
+      return res
         .status(500)
         .json(
           handleHttp(
@@ -139,14 +138,14 @@ export const login = async function (
 export const logout = async function (
   req: Request,
   res: Response,
-): Promise<void> {
+): Promise<any> {
   res.cookie('token', '', {
     expires: new Date(0),
   });
-  res.sendStatus(200);
+  return res.sendStatus(200);
 };
 
-export const profile = async function (req: any, res: Response): Promise<void> {
+export const profile = async function (req: any, res: Response): Promise<any> {
   try {
     const userFound = await User.findById(req.user.id);
 
@@ -154,7 +153,7 @@ export const profile = async function (req: any, res: Response): Promise<void> {
       throw new Error('User not found');
     }
 
-    res.status(201).json(
+    return res.status(201).json(
       handleHttp('profileUser', {
         id: userFound._id,
         username: userFound.username,
@@ -168,7 +167,7 @@ export const profile = async function (req: any, res: Response): Promise<void> {
 
     if (error instanceof Error) {
       if (error.message === 'User not found') {
-        res
+        return res
           .status(404)
           .json(
             handleHttp(
@@ -178,7 +177,7 @@ export const profile = async function (req: any, res: Response): Promise<void> {
             ),
           );
       } else {
-        res
+        return res
           .status(500)
           .json(
             handleHttp(
@@ -189,7 +188,7 @@ export const profile = async function (req: any, res: Response): Promise<void> {
           );
       }
     } else {
-      res
+      return res
         .status(500)
         .json(
           handleHttp(
