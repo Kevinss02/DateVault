@@ -1,12 +1,17 @@
 import { AxiosError } from 'axios';
+import Cookies from 'js-cookie';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
-import { loginUser, registerUser } from '../api/userRequest';
+import {
+  loginUser,
+  registerUser,
+  verifyTokenRequest,
+} from '../api/userRequest';
 import { type UserData, UserDataResponse, UserLoginData } from '../types/types';
 
 export type AuthState = {
-  user: UserDataResponse | undefined;
+  user: UserDataResponse | null;
   isAuthenticated: boolean;
   signUpErrors: string[];
   signInErrors: string[];
@@ -15,11 +20,13 @@ export type AuthState = {
   signIn: (user: UserLoginData) => Promise<void>;
   clearSignUpErrors: (filter: (error: string) => boolean) => void;
   clearSignInErrors: (filter: (error: string) => boolean) => void;
+  signOut: () => void;
+  checkLogin: () => Promise<void>;
 };
 
 export const useAuthStore = createWithEqualityFn<AuthState>(
   (set) => ({
-    user: undefined,
+    user: null,
     isAuthenticated: false,
     signUpErrors: [],
     signInErrors: [],
@@ -68,6 +75,40 @@ export const useAuthStore = createWithEqualityFn<AuthState>(
       set((state: AuthState) => ({
         signInErrors: state.signInErrors.filter(filter),
       }));
+    },
+
+    signOut: () => {
+      Cookies.remove('token');
+      set({ user: null, isAuthenticated: false });
+    },
+
+    checkLogin: async () => {
+      const cookies = Cookies.get();
+      console.log('COOKIES: ', cookies);
+      if (cookies['token'] == null) {
+        set({ isAuthenticated: false, loading: false });
+        console.log('AAAAA');
+        return;
+      }
+
+      try {
+        console.log('Inside');
+        const res = await verifyTokenRequest();
+        console.log(res, ' BBBB');
+        if (res == null) {
+          set({ isAuthenticated: false });
+          console.log('CCCCC');
+          return;
+        }
+        set({
+          isAuthenticated: true,
+          user: res.output,
+          loading: false,
+        });
+      } catch (error) {
+        set({ isAuthenticated: false, loading: false });
+        console.log('Error. ', error);
+      }
     },
   }),
   shallow,

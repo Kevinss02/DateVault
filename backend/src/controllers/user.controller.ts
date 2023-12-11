@@ -1,5 +1,7 @@
 import { type Request, type Response } from 'express';
+import jwt from 'jsonwebtoken';
 
+import { TOKEN_SECRET } from '../config.js';
 import User from '../models/user.model.js';
 import { loginUser, registerUser } from '../services/user.service.js';
 import { handleHttp, parseMongoErr } from '../utils/error.handler.js';
@@ -23,7 +25,10 @@ export const register = async function (
       registrationDate: user.registrationDate,
     };
 
-    res.cookie('token', token);
+    res.cookie('token', token, {
+      secure: true,
+      sameSite: 'none',
+    });
     return res.status(201).json(handleHttp('registerUser', userDataResponse));
   } catch (error) {
     console.error('Registration error:', error);
@@ -84,7 +89,10 @@ export const login = async function (
       name: user.name,
     };
 
-    res.cookie('token', token);
+    res.cookie('token', token, {
+      secure: true,
+      sameSite: 'none',
+    });
     return res.status(201).json(handleHttp('loginUser', loginDataResponse));
   } catch (error) {
     console.error('Login error:', error);
@@ -141,20 +149,59 @@ export const logout = async function (
 ): Promise<any> {
   res.cookie('token', '', {
     expires: new Date(0),
+    httpOnly: true,
+    secure: true,
   });
   return res.sendStatus(200);
 };
 
-export const profile = async function (req: any, res: Response): Promise<any> {
-  try {
-    const userFound = await User.findById(req.user.id);
+export const verifyToken = async function (
+  req: Request,
+  res: Response,
+): Promise<any> {
+  const { token } = req.cookies;
 
+  if (token == null) {
+    return res
+      .status(401)
+      .json(
+        handleHttp(
+          'verifyToken',
+          { params: req.params, body: req.body },
+          'Unauthorized: No token',
+        ),
+      );
+  }
+
+  jwt.verify(token, TOKEN_SECRET, async function (err: any, user: any) {
+    if (err != null) {
+      return res
+        .status(401)
+        .json(
+          handleHttp(
+            'verifyToken',
+            { params: req.params, body: req.body },
+            'Unauthorized by jwt',
+          ),
+        );
+    }
+
+    const userFound = await User.findById(user.id);
+    console.log('User Found: ', userFound);
     if (userFound == null) {
-      throw new Error('User not found');
+      return res
+        .status(401)
+        .json(
+          handleHttp(
+            'verifyToken',
+            { params: req.params, body: req.body },
+            'Unauthorized: User Not Found',
+          ),
+        );
     }
 
     return res.status(201).json(
-      handleHttp('profileUser', {
+      handleHttp('verifyToken', {
         id: userFound._id,
         username: userFound.username,
         email: userFound.email,
@@ -162,41 +209,5 @@ export const profile = async function (req: any, res: Response): Promise<any> {
         registrationDate: userFound.register_date,
       }),
     );
-  } catch (error) {
-    console.error('Profile error:', error);
-
-    if (error instanceof Error) {
-      if (error.message === 'User not found') {
-        return res
-          .status(404)
-          .json(
-            handleHttp(
-              'profileUser',
-              { params: req.params, body: req.body },
-              'Error: User not found',
-            ),
-          );
-      } else {
-        return res
-          .status(500)
-          .json(
-            handleHttp(
-              'profileUser',
-              { params: req.params, body: req.body },
-              `Unexpected error: ${error as any}`,
-            ),
-          );
-      }
-    } else {
-      return res
-        .status(500)
-        .json(
-          handleHttp(
-            'profileUser',
-            { params: req.params, body: req.body },
-            `Unexpected error: ${error as any}`,
-          ),
-        );
-    }
-  }
+  });
 };

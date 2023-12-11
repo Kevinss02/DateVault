@@ -25,3 +25,12 @@ export const loginUser = async function (
   );
   return response.data;
 };
+
+export const verifyTokenRequest = async function (): Promise<
+  ResponseType<UserDataResponse>
+> {
+  const response = await api.get('/verify', {
+    withCredentials: true,
+  });
+  return response.data;
+};

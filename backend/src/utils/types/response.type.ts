@@ -4,6 +4,7 @@ export type OpTypes =
   | 'profileUser'
   | 'zodValidation'
   | 'tokenValidation'
+  | 'verifyToken'
   | 'get'
   | 'add'
   | 'update'
