@@ -27,6 +27,20 @@ const memorySchema = new Schema(
       type: [String],
       default: [],
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User',
+      required: true,
+    },
+    date: {
+      type: Date,
+      required: true,
+    },
+    location: {
+      type: String,
+      required: true,
+      trim: true,
+    },
   },
   {
     timestamps: true,

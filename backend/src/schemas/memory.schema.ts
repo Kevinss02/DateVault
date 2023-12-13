@@ -14,10 +14,21 @@ export const memorySchema = z
       message: 'Feelings are required',
     }),
     imagesUrl: z.array(z.string()).default([]),
+    date: z.date().refine((data) => data !== undefined, {
+      message: 'Date is required',
+    }),
+    location: z.string().refine((data) => data.trim() !== '', {
+      message: 'Location is required',
+    }),
   })
   .refine(
-    (data) => data.title !== '' && data.description !== '' && data.feelings,
+    (data) =>
+      data.title !== '' &&
+      data.description !== '' &&
+      data.feelings !== undefined &&
+      data.date !== undefined &&
+      data.location !== '',
     {
-      message: 'Title, description, and feelings are required',
+      message: 'Title, description, feelings, date, and location are required',
     },
   );

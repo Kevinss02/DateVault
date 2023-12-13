@@ -16,9 +16,16 @@ export async function getMemoryController(
 ): Promise<any> {
   try {
     const { id } = req.params;
+    const { user } = req;
+
+    if (user?.id == null) {
+      throw new Error(
+        'User and its user id must be declared in request params',
+      );
+    }
 
     if (id != null) {
-      const mem = await getMemory(id);
+      const mem = await getMemory(id, user.id);
       return res.status(200).json(handleHttp('get', mem));
     } else {
       return res
@@ -51,7 +58,14 @@ export async function getMemoriesController(
   res: Response,
 ): Promise<any> {
   try {
-    const mems = await getAllMemories();
+    const { user } = req;
+    if (user?.id == null) {
+      throw new Error(
+        'User and its user id must be declared in request params',
+      );
+    }
+
+    const mems = await getAllMemories(user.id);
     return res.status(200).json(handleHttp('get', mems));
   } catch (error) {
     if (error instanceof Error) {
@@ -79,7 +93,14 @@ export async function addMemoryController(
   try {
     const validMemory = memorySchema.parse(req.body);
 
-    const result = await addMemory(validMemory);
+    const { user } = req;
+
+    if (user?.id == null) {
+      throw new Error(
+        'User and its user id must be declared in request params',
+      );
+    }
+    const result = await addMemory(validMemory, user.id);
     return res.status(200).json(handleHttp('add', result));
   } catch (error) {
     if (error instanceof Error) {
@@ -112,11 +133,18 @@ export async function updateMemoryController(
 ): Promise<any> {
   try {
     const { id } = req.params;
+    const { user } = req;
 
     if (id != null) {
       const validMemory = memorySchema.parse(req.body);
 
-      const result = await updateMemory(id, validMemory);
+      if (user?.id == null) {
+        throw new Error(
+          'User and its user id must be declared in request params',
+        );
+      }
+
+      const result = await updateMemory(id, validMemory, user.id);
       return res.status(200).json(handleHttp('update', result));
     } else {
       return res
@@ -156,9 +184,16 @@ export async function deleteMemoryController(
 ): Promise<any> {
   try {
     const { id } = req.params;
+    const { user } = req;
+
+    if (user?.id == null) {
+      throw new Error(
+        'User and its user id must be declared in request params',
+      );
+    }
 
     if (id != null) {
-      const result = await deleteMemory(id);
+      const result = await deleteMemory(id, user.id);
       return res
         .status(200)
         .json(

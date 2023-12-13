@@ -9,7 +9,7 @@ export const authRequired = function (
   res: Response,
   next: NextFunction,
 ): void {
-  const token = req.cookies.token;
+  const token = req.cookies.token ?? req.headers.token;
 
   if (token == null) {
     res
@@ -17,7 +17,7 @@ export const authRequired = function (
       .json(
         handleHttp(
           'tokenValidation',
-          { params: req.params, body: req.body },
+          { params: req.params, body: req.body, cookies: req.cookies.headers },
           'No token, authorization denied',
         ),
       );
@@ -40,6 +40,7 @@ export const authRequired = function (
     }
 
     req.user = user;
+    console.log(user);
 
     next();
   });
