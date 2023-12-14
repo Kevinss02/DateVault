@@ -8,7 +8,7 @@ function VaultPage(): React.JSX.Element {
 
   return (
     <section className='flex items-center justify-center bg-custom-purple'>
-      {user === undefined ? (
+      {user === null ? (
         <p>No info</p>
       ) : (
         <div>
