@@ -28,7 +28,6 @@ function SignInForm(): React.JSX.Element {
   const onSubmit: SubmitHandler<FieldValues> = async function (
     values: FieldValues,
   ) {
-    console.log(isAuthenticated);
     await signIn(values as UserLoginData);
   };
 

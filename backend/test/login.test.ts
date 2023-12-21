@@ -56,7 +56,7 @@ describe('login', () => {
       .post('/login')
       .send({
         email: 'shadow77@gmail.com',
-        password: '1234567',
+        password: 'aaaaaa',
       })
       .expect(201);
 
@@ -64,9 +64,9 @@ describe('login', () => {
       type: 'loginUser',
       success: true,
       output: {
-        id: '655fb410490ff38077614f0c',
+        id: '657b6eb54c4749f09a1a1346',
         email: 'shadow77@gmail.com',
-        registrationDate: '2023-11-23T20:20:32.410Z',
+        registrationDate: '2023-12-14T21:08:05.343Z',
         username: 'shadow',
         name: 'Juan Carlos',
       },
