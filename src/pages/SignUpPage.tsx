@@ -25,7 +25,7 @@ function SignUpPage(): React.JSX.Element {
                         <div className='mb-5 h-45 w-45 rounded-full bg-neutral-800 shadow-lg'></div>
                         <img
                           className='absolute mb-5 w-40 rounded-full md:mt-0'
-                          src='./src/assets/logo-pink.jpeg'
+                          src='/logo-pink.jpeg'
                           alt='logo'
                         />
                       </div>
