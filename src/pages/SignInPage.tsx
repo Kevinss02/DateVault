@@ -18,7 +18,7 @@ function SignInPage(): React.JSX.Element {
                         <div className='flex items-center justify-center'>
                           <img
                             className='mb-5 mt-10 w-40 rounded-full md:mt-0'
-                            src='./src/assets/logo-pink.jpeg'
+                            src='/logo-pink.jpeg'
                             alt='logo'
                           />
                         </div>

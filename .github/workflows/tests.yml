@@ -1,0 +1,42 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - '*'
+  pull_request:
+    branches:
+      - '*'
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    env:
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      PORT: ${{ secrets.PORT }}
+      HOST: ${{ secrets.HOST }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.17.1
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Start Backend Server
+        run: |
+          cd backend
+          npm install
+          sudo npm install typescript -g
+          tsc
+          node dist/index.js &
+
+      - name: Run tests
+        run: npm test
