@@ -14,7 +14,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18.17.1
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Generating coverage report
+        run: npm run coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
