@@ -1,4 +1,4 @@
-name: Sonar-Cloud
+name: Run tests
 
 on:
   push:
@@ -9,11 +9,19 @@ on:
       - '*'
 
 jobs:
-  sonarcloud:
-    name: SonarCloud
+  tests:
     runs-on: ubuntu-latest
+
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+      MONGODB_URI: ${{ secrets.MONGODB_URI }}
+      PORT: ${{ secrets.PORT }}
+      HOST: ${{ secrets.HOST }}
+      TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
+
     steps:
-      - name: Checkout repo
+      - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Node
@@ -40,10 +48,3 @@ jobs:
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          MONGODB_URI: ${{ secrets.MONGODB_URI }}
-          PORT: ${{ secrets.PORT }}
-          HOST: ${{ secrets.HOST }}
-          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}
