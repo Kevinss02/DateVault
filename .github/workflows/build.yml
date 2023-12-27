@@ -32,6 +32,9 @@ jobs:
           tsc
           node dist/index.js &
 
+      - name: Run tests
+        run: npm test
+
       - name: Generating coverage report
         run: npm run coverage
 
