@@ -28,4 +28,4 @@ If you are developing a production application, we recommend updating the config
 
 [![Commitizen-friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
-![Sonar Coverage](https://img.shields.io/sonar/coverage/:component)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=Kevinss02_DateVault&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=Kevinss02_DateVault)
