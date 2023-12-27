@@ -24,9 +24,6 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
-      - name: Generating coverage report
-        run: npm run coverage
-
       - name: Start Backend Server
         run: |
           cd backend
@@ -34,6 +31,9 @@ jobs:
           sudo npm install typescript -g
           tsc
           node dist/index.js &
+
+      - name: Generating coverage report
+        run: npm run coverage
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
