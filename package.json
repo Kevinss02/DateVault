@@ -13,6 +13,7 @@
     "prepare": "husky install",
     "test": "vitest --no-watch",
     "knip": "knip",
+    "coverage": "vitest run --coverage",
     "cz": "npx cz"
   },
   "dependencies": {
@@ -48,8 +49,10 @@
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "@vitest/coverage-istanbul": "^1.1.0",
     "autoprefixer": "^10.4.16",
     "commitizen": "^4.3.0",
+    "coveralls": "^3.1.1",
     "cz-conventional-changelog": "^3.3.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.56.0",
@@ -65,6 +68,8 @@
     "husky": "^8.0.3",
     "knip": "^2.43.0",
     "lint-staged": "^15.2.0",
+    "ny": "^1.7.0",
+    "nyc": "^15.1.0",
     "postcss": "^8.4.32",
     "prettier": "^3.1.1",
     "tailwindcss": "^3.4.0",

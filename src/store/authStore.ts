@@ -59,7 +59,7 @@ export const useAuthStore = createWithEqualityFn<AuthState>(
         if (error instanceof AxiosError) {
           const errorParsed = error.response?.data;
           set((state: AuthState) => ({
-            signInErrors: [...state.signInErrors, errorParsed.error],
+            signInErrors: [...state.signInErrors, errorParsed?.error],
           }));
         }
       }

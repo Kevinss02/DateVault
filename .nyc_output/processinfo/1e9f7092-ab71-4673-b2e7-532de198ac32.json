@@ -1,0 +1,17 @@
+{
+  "parent": null,
+  "pid": 18313,
+  "argv": [
+    "/usr/bin/node",
+    "/home/neizel/projects/ull/DateVault/node_modules/vitest/vitest.mjs",
+    "--no-watch"
+  ],
+  "execArgv": [],
+  "cwd": "/home/neizel/projects/ull/DateVault",
+  "time": 1703703702318,
+  "ppid": 18312,
+  "coverageFilename": "/home/neizel/projects/ull/DateVault/.nyc_output/1e9f7092-ab71-4673-b2e7-532de198ac32.json",
+  "externalId": "",
+  "uuid": "1e9f7092-ab71-4673-b2e7-532de198ac32",
+  "files": []
+}

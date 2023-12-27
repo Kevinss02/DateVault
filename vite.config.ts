@@ -10,6 +10,10 @@ const vitestConfig = defineVitestConfig({
   test: {
     globals: true,
     environment: 'jsdom',
+    coverage: {
+      provider: 'istanbul',
+      reporter: ['lcov'],
+    },
   },
 });
 
