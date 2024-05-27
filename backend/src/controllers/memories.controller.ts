@@ -13,7 +13,7 @@ import { handleHttp } from '../utils/error.handler.js';
 export async function getMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
@@ -56,7 +56,7 @@ export async function getMemoryController(
 export async function getMemoriesController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { user } = req;
     if (user?.id == null) {
@@ -89,10 +89,9 @@ export async function getMemoriesController(
 export async function addMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const validMemory = memorySchema.parse(req.body);
-
     const { user } = req;
 
     if (user?.id == null) {
@@ -130,7 +129,7 @@ export async function addMemoryController(
 export async function updateMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
@@ -181,7 +180,7 @@ export async function updateMemoryController(
 export async function deleteMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
