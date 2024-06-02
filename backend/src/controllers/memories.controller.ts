@@ -99,7 +99,7 @@ export async function addMemoryController(
         'User and its user id must be declared in request params',
       );
     }
-    const result = await addMemory(validMemory, user.id);
+    const result = await addMemory(validMemory, user.id, req.files);
     return res.status(200).json(handleHttp('add', result));
   } catch (error) {
     if (error instanceof Error) {
@@ -143,7 +143,7 @@ export async function updateMemoryController(
         );
       }
 
-      const result = await updateMemory(id, validMemory, user.id);
+      const result = await updateMemory(id, validMemory, user.id, req.files);
       return res.status(200).json(handleHttp('update', result));
     } else {
       return res
@@ -190,7 +190,6 @@ export async function deleteMemoryController(
         'User and its user id must be declared in request params',
       );
     }
-
     if (id != null) {
       const result = await deleteMemory(id, user.id);
       return res

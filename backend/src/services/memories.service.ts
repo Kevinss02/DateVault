@@ -1,3 +1,6 @@
+import { Express } from 'express-serve-static-core';
+import fs from 'fs';
+
 import Memory from '../models/memory.model.js';
 import { MemoryResponse, MemoryType } from '../utils/types/types.js';
 
@@ -32,23 +35,28 @@ export async function getAllMemories(userId: string): Promise<MemoryType[]> {
 export async function addMemory(
   body: MemoryType,
   userId: string,
-  files?: any,
+  files?:
+    | Record<string, Express.Multer.File[]>
+    | Express.Multer.File[]
+    | undefined,
 ): Promise<MemoryResponse> {
   const { title, description, feelings, date, location } = body;
 
   const uploadedImages: string[] = [];
-  if (files?.image != null) {
-    console.log('File not empty');
+  if (Array.isArray(files)) {
+    files.forEach((image: { filename: string }) => {
+      uploadedImages.push(`/uploads/${image.filename}`);
+    });
   }
 
   const newMemory = new Memory({
     title,
+    date,
     description,
     feelings,
-    date,
-    location,
-    images: uploadedImages,
+    imagesUrl: uploadedImages,
     user: userId,
+    location,
   });
 
   await newMemory.save();
@@ -70,13 +78,18 @@ export async function updateMemory(
   id: string,
   body: MemoryType,
   userId: string,
-  files?: any,
+  files?:
+    | Record<string, Express.Multer.File[]>
+    | Express.Multer.File[]
+    | undefined,
 ): Promise<MemoryResponse> {
   const { title, description, feelings, date, location } = body;
 
   const uploadedImages: string[] = [];
-  if (files?.image != null) {
-    console.log('File not empty');
+  if (Array.isArray(files)) {
+    files.forEach((image: { filename: string }) => {
+      uploadedImages.push(`/uploads/${image.filename}`);
+    });
   }
 
   const memory: MemoryResponse | null = await Memory.findOneAndUpdate(
@@ -111,9 +124,25 @@ export async function deleteMemory(
     user: userId,
   });
 
+  if (memory != null) {
+    memory.imagesUrl.forEach((image) => {
+      deleteImage(`./public/${image}`);
+    });
+  }
+
   if (memory == null) {
     throw new Error(`Memory with id ${id} not found`);
   }
 
   return memory;
 }
+
+const deleteImage = (imagePath: string): void => {
+  fs.unlink(imagePath, (err) => {
+    if (err != null) {
+      console.error(`Error al borrar la imagen: ${err.message}`);
+    } else {
+      console.log('Imagen borrada correctamente');
+    }
+  });
+};
