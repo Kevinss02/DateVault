@@ -14,7 +14,7 @@ export const memorySchema = z
       message: 'Feelings are required',
     }),
     imagesUrl: z.array(z.string()).default([]),
-    date: z.string().refine((data) => data !== undefined, {
+    date: z.date().refine((data) => data !== undefined, {
       message: 'Date is required',
     }),
     location: z.string().refine((data) => data.trim() !== '', {

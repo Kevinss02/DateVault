@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 
+import { convertImage } from '../middlewares/conversion.js';
 import { memorySchema } from '../schemas/memory.schema.js';
 import {
   addMemory,
@@ -98,6 +99,11 @@ export async function addMemoryController(
       throw new Error(
         'User and its user id must be declared in request params',
       );
+    }
+    if (Array.isArray(req.files)) {
+      req.files.forEach((image: { path: string; filename: string }) => {
+        void convertImage(image.path, image.filename);
+      });
     }
     const result = await addMemory(validMemory, user.id, req.files);
     return res.status(200).json(handleHttp('add', result));

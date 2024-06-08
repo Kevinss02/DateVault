@@ -30,4 +30,3 @@ const filter = (
 };
 
 export const uploadImage = multer({ storage: saveImage, fileFilter: filter });
-export const deleteImage = multer;

@@ -1,6 +1,6 @@
 import { Express } from 'express-serve-static-core';
-import fs from 'fs';
 
+import { deleteImage } from '../helpers/deleteImage.js';
 import Memory from '../models/memory.model.js';
 import { MemoryResponse, MemoryType } from '../utils/types/types.js';
 
@@ -45,7 +45,11 @@ export async function addMemory(
   const uploadedImages: string[] = [];
   if (Array.isArray(files)) {
     files.forEach((image: { filename: string }) => {
-      uploadedImages.push(`/uploads/${image.filename}`);
+      const fileNameWithoutExt = image.filename.substring(
+        0,
+        image.filename.lastIndexOf('.'),
+      );
+      uploadedImages.push(`/uploads/${fileNameWithoutExt}`);
     });
   }
 
@@ -128,21 +132,9 @@ export async function deleteMemory(
     memory.imagesUrl.forEach((image) => {
       deleteImage(`./public/${image}`);
     });
-  }
-
-  if (memory == null) {
+  } else {
     throw new Error(`Memory with id ${id} not found`);
   }
 
   return memory;
 }
-
-const deleteImage = (imagePath: string): void => {
-  fs.unlink(imagePath, (err) => {
-    if (err != null) {
-      console.error(`Error al borrar la imagen: ${err.message}`);
-    } else {
-      console.log('Imagen borrada correctamente');
-    }
-  });
-};
