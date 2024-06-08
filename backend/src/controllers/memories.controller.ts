@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 
-import { convertImage } from '../middlewares/conversion.js';
+import { convertImage } from '../helpers/conversion.js';
 import { memorySchema } from '../schemas/memory.schema.js';
 import {
   addMemory,
