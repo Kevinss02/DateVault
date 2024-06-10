@@ -1,13 +1,17 @@
 import * as React from 'react';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 import { BsFillArrowThroughHeartFill } from 'react-icons/bs';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthState, useAuthStore } from '../store/authStore';
 import { UserLoginData } from '../types/types';
 import CuteButton from './CuteButton';
 
-function SignInForm(): React.JSX.Element {
+type SignInFormProps = {
+  className?: string;
+};
+
+function SignInForm({ className }: SignInFormProps): React.JSX.Element {
   const {
     register,
     handleSubmit,
@@ -57,13 +61,11 @@ function SignInForm(): React.JSX.Element {
   }, [isAuthenticated, navigate]);
 
   return (
-    <form className='font-cute text-neutral-300'>
-      <div className='mb-10 mt-8 text-center'>
-        <p className='mb-4 leading-tight'>
-          Welcome back! Please login to access your DateVault account.
-        </p>
-      </div>
-
+    <form
+      className={`font-cute mx-auto w-full max-w-[90%] text-neutral-300  lg:max-w-sm ${
+        className ?? ''
+      }`}
+    >
       {/* Email */}
       <input
         type='text'
@@ -125,23 +127,14 @@ function SignInForm(): React.JSX.Element {
       )}
 
       {/* Submit button */}
-      <div className='mb-12 py-1 text-center'>
-        <div className='mt-3 inline-block w-full'>
-          <CuteButton type='submit' onClick={handleSubmit(onSubmit)}>
-            Sign in
-          </CuteButton>
-
-          {/* Forgot password link */}
-          <a href='#!'>Forgot password?</a>
-        </div>
-      </div>
-
-      {/* Register button */}
-      <div className='flex items-center justify-between pb-6'>
-        <p className='me-10'>Don&apos;t have an account?</p>
-        <p>
-          <Link to='/sign-up'>Sign up</Link>
-        </p>
+      <div className='mt-4 '>
+        <CuteButton
+          className='text-xs'
+          type='submit'
+          onClick={handleSubmit(onSubmit)}
+        >
+          Sign in
+        </CuteButton>
       </div>
     </form>
   );

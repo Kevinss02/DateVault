@@ -18,7 +18,7 @@ const CuteButton = function ({
 }: CuteButtonProps): React.JSX.Element {
   return (
     <button
-      className={`custom-pink-gradient mb-3 w-full select-none rounded pb-2 pt-2.5 text-xs font-semibold uppercase leading-normal text-gray-750 outline-none
+      className={`custom-pink-gradient mb-3 w-full select-none rounded pb-2 pt-2.5 font-semibold uppercase leading-normal text-gray-750 outline-none
         transition-all duration-100 ease-in-out hover:scale-105 hover:rounded-xl hover:brightness-110 active:scale-75 ${className}`}
       style={style}
       type={type}

@@ -1,4 +1,6 @@
 import { Request, Response } from 'express';
+import fs from 'fs';
+import path from 'path';
 
 import { memorySchema } from '../schemas/memory.schema.js';
 import {
@@ -13,7 +15,7 @@ import { handleHttp } from '../utils/error.handler.js';
 export async function getMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
@@ -56,7 +58,7 @@ export async function getMemoryController(
 export async function getMemoriesController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { user } = req;
     if (user?.id == null) {
@@ -89,10 +91,9 @@ export async function getMemoriesController(
 export async function addMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const validMemory = memorySchema.parse(req.body);
-
     const { user } = req;
 
     if (user?.id == null) {
@@ -100,7 +101,7 @@ export async function addMemoryController(
         'User and its user id must be declared in request params',
       );
     }
-    const result = await addMemory(validMemory, user.id);
+    const result = await addMemory(validMemory, user.id, req.files);
     return res.status(200).json(handleHttp('add', result));
   } catch (error) {
     if (error instanceof Error) {
@@ -130,7 +131,7 @@ export async function addMemoryController(
 export async function updateMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
@@ -143,8 +144,7 @@ export async function updateMemoryController(
           'User and its user id must be declared in request params',
         );
       }
-
-      const result = await updateMemory(id, validMemory, user.id);
+      const result = await updateMemory(id, validMemory, user.id, req.files);
       return res.status(200).json(handleHttp('update', result));
     } else {
       return res
@@ -181,7 +181,7 @@ export async function updateMemoryController(
 export async function deleteMemoryController(
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   try {
     const { id } = req.params;
     const { user } = req;
@@ -191,7 +191,6 @@ export async function deleteMemoryController(
         'User and its user id must be declared in request params',
       );
     }
-
     if (id != null) {
       const result = await deleteMemory(id, user.id);
       return res
@@ -225,6 +224,50 @@ export async function deleteMemoryController(
             `Undefined error: ${error as string}`,
           ),
         );
+    }
+  }
+}
+
+export async function getImageController(
+  req: Request,
+  res: Response,
+): Promise<Response | undefined> {
+  try {
+    const { id } = req.params;
+
+    const imagePath = `/uploads/${id}`;
+
+    console.log(imagePath);
+
+    if (imagePath.length === 0) {
+      return res
+        .status(400)
+        .json({ message: 'Image path is required as a parameter' });
+    }
+
+    const dirname = process.cwd();
+    const fullImagePath = path.join(dirname, '/public', imagePath);
+
+    console.log(fullImagePath);
+
+    fs.access(fullImagePath, fs.constants.F_OK, (err) => {
+      if (err != null) {
+        return res.status(404).json({ message: 'Image not found' });
+      } else {
+        res.sendFile(fullImagePath, (err) => {
+          if (err != null) {
+            return res.status(500).json({ message: 'Error sending file' });
+          }
+        });
+      }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    } else {
+      return res
+        .status(500)
+        .json({ message: `Undefined error: ${error as string}` });
     }
   }
 }

@@ -29,3 +29,18 @@ export type UserDataResponse = Omit<UserData, 'password'> & {
 };
 
 export type UserLoginData = Omit<UserData, 'name' | 'username'>;
+
+export type MemoryData = {
+  date: string;
+  title: string;
+  description: string;
+  feelings: 'very bad' | 'bad' | 'regular' | 'good' | 'very good' | '';
+  imagesUrl: string[];
+  location: string;
+};
+
+export type MemoryDataResponse = MemoryData & {
+  _id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

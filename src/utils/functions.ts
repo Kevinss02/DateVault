@@ -17,3 +17,9 @@ export function formatDate(date: Date | string): string {
   // Formatea la fecha como "DD/MM/YYYY"
   return `${day}/${month}/${year}`;
 }
+
+export function htmlToPlainText(html: string): string {
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, 'text/html');
+  return doc.body.textContent ?? '';
+}

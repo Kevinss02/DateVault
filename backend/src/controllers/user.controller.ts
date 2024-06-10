@@ -7,10 +7,14 @@ import { loginUser, registerUser } from '../services/user.service.js';
 import { handleHttp, parseMongoErr } from '../utils/error.handler.js';
 import { type UserData, type UserDataResponse } from '../utils/types/types.js';
 
+type CustomJwtPayload = {
+  id: string;
+};
+
 export const register = async function (
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   const { username, email, password, name }: UserData = req.body;
 
   try {
@@ -63,7 +67,7 @@ export const register = async function (
           handleHttp(
             'registerUser',
             { params: req.params, body: req.body },
-            `Unexpected error: ${error as any}`,
+            `Unexpected error: ${String(error)}`,
           ),
         );
     }
@@ -73,7 +77,7 @@ export const register = async function (
 export const login = async function (
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   const { email, password }: UserData = req.body;
 
   try {
@@ -125,7 +129,7 @@ export const login = async function (
             handleHttp(
               'loginUser',
               { params: req.params, body: req.body },
-              `Unexpected error: ${error as any}`,
+              `Unexpected error: ${error.message}`,
             ),
           );
       }
@@ -136,7 +140,7 @@ export const login = async function (
           handleHttp(
             'loginUser',
             { params: req.params, body: req.body },
-            `Unexpected error: ${error as any}`,
+            `Unexpected error: ${String(error)}`,
           ),
         );
     }
@@ -146,7 +150,7 @@ export const login = async function (
 export const logout = async function (
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   res.cookie('token', '', {
     expires: new Date(0),
     httpOnly: true,
@@ -158,7 +162,7 @@ export const logout = async function (
 export const verifyToken = async function (
   req: Request,
   res: Response,
-): Promise<any> {
+): Promise<Response> {
   const { token } = req.cookies;
 
   if (token == null) {
@@ -173,18 +177,11 @@ export const verifyToken = async function (
       );
   }
 
-  jwt.verify(token, TOKEN_SECRET, async function (err: any, user: any) {
-    if (err != null) {
-      return res
-        .status(401)
-        .json(
-          handleHttp(
-            'verifyToken',
-            { params: req.params, body: req.body },
-            'Unauthorized by jwt',
-          ),
-        );
-    }
+  try {
+    const user: CustomJwtPayload = jwt.verify(
+      token,
+      TOKEN_SECRET,
+    ) as CustomJwtPayload;
 
     const userFound = await User.findById(user.id);
     console.log('User Found: ', userFound);
@@ -209,5 +206,15 @@ export const verifyToken = async function (
         registrationDate: userFound.register_date,
       }),
     );
-  });
+  } catch (err) {
+    return res
+      .status(401)
+      .json(
+        handleHttp(
+          'verifyToken',
+          { params: req.params, body: req.body },
+          'Unauthorized by jwt',
+        ),
+      );
+  }
 };

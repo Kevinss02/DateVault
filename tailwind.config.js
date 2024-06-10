@@ -15,8 +15,10 @@ export default {
       spacing: {
         46: '184px',
         45: '180px',
+        30: '120px',
+        29: '116px',
       },
     },
   },
-  plugins: [],
+  plugins: [require('@tailwindcss/typography')],
 };

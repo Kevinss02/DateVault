@@ -4,8 +4,13 @@ import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 import ProtectedRoute from './ProtectedRoute';
+import HomePage from './pages/HomePage';
+import MemoryForm from './pages/MemoryForm';
+import MemoryView from './pages/MemoryViewPage';
+import NotFoundPage from './pages/NotFoundPage';
 import SignInPage from './pages/SignInPage';
 import SignUpPage from './pages/SignUpPage';
+import TestPage from './pages/TestPage';
 import VaultPage from './pages/VaultPage';
 
 function App(): React.JSX.Element {
@@ -13,14 +18,19 @@ function App(): React.JSX.Element {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path='/' element={<h1>Home Page</h1>} />
+        <Route path='/' element={<HomePage />} />
         <Route path='/sign-in' element={<SignInPage />} />
         <Route path='/sign-up' element={<SignUpPage />} />
+        <Route path='/test' element={<TestPage />} />
+        <Route path='/404' element={<NotFoundPage />} />
 
         {/* Private routes */}
         <Route element={<ProtectedRoute />}>
           <Route path='/vault' element={<VaultPage />} />
           <Route path='/profile' element={<h1>Profile Page</h1>} />
+          <Route path='/vault/create' element={<MemoryForm />} />
+          <Route path='/vault/edit/:id' element={<MemoryForm />} />
+          <Route path='/vault/view/:id' element={<MemoryView />} />
         </Route>
       </Routes>
     </BrowserRouter>

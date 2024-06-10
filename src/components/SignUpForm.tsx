@@ -60,7 +60,7 @@ function SignUpForm(): React.JSX.Element {
     <form onSubmit={handleSubmit(onSubmit)}>
       <div className='font-cute mb-10 mt-8 text-center tracking-wider text-neutral-300'>
         <p className='mb-4 leading-tight'>
-          Ops! You are not logged with us yet. Please sign up to continue and
+          Oops! You are not logged with us yet. Please sign up to continue and
           save your precious memories!
         </p>
 

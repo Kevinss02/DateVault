@@ -13,3 +13,37 @@
 .font-cute {
   font-family: 'MadeGentle', sans-serif;
 }
+
+@font-face {
+  font-family: 'EnchantedLand';
+  src: url('./assets/fonts/EnchantedLand.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-enchanted {
+  font-family: 'EnchantedLand', sans-serif;
+}
+
+@font-face {
+  font-family: 'Golday';
+  src: url('./assets/fonts/Golday.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-golday {
+  font-family: 'Golday', sans-serif;
+}
+
+@font-face {
+  font-family: 'MagicOwl';
+  src: url('./assets/fonts/MagicOwl.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-magic {
+  font-family: 'MagicOwl', sans-serif;
+}
+

@@ -29,16 +29,6 @@ app.use('/public', express.static(path.join(dirname, 'storage', 'imgs')));
 app.use(userRouter);
 app.use(memoriesRouter);
 
-/* const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, './uploads');
-  },
-  filename: (req, file, cb) => {
-    const ext = file.originalname.split('.').pop();
-    cb(null, `${Date.now()}.${ext}`);
-  },
-}); */
-
 // routes
 // app.use(`/api/${version}/${routeName}`, userRouter);
 

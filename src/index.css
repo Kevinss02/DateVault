@@ -14,6 +14,7 @@
   .custom-dark-pink-gradient {
     @apply bg-gradient-to-r from-custom-darker-pastel via-custom-darker-pink to-custom-darker-purple;
   }
+
 }
 
 @layer utilities {
@@ -24,4 +25,17 @@
   .mt-0_1 {
     margin-top: 0.1rem;
   }
+  
+}
+
+.custom-scrollbar {
+  scrollbar-color: #9C89B8 #ffff; /* thumb color | track color */
+}
+
+
+blockquote {
+  margin: 0 0 1em; /* Añade un margen inferior para separar los bloques de citas de otros elementos */
+  padding: 0 1em; /* Añade un relleno para mejorar la legibilidad del texto dentro del bloque de citas */
+  border-left: 4px solid #ccc; /* Agrega una línea a la izquierda para destacar el bloque de citas */
+  font-style: italic; /* Utiliza una fuente en cursiva para indicar que es un texto citado */
 }
