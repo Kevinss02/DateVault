@@ -51,7 +51,7 @@ describe('login', () => {
     });
   });
 
-  it('should login user successfuly', async () => {
+  it('should login user successfully', async () => {
     const response = await request(app)
       .post('/login')
       .send({
