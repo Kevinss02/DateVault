@@ -5,9 +5,11 @@
 	"main": "index.js",
 	"type": "module",
 	"scripts": {
-		"dev": "bun run --hot src/index.ts",
-		"start": "bun run src/index.ts",
-		"test": "vitest"
+		"dev": "pnpm /dev:.*/",
+		"dev:build": "esbuild dev.ts ./src --bundle --outdir=dist --packages=external --platform=node --sourcemap --watch",
+		"dev:run": "node --inspect -r ./dist/dev.js --watch dist/src",
+		"build": "esbuild index=./src --bundle --minify --outdir=dist --packages=external --platform=node",
+		"start": "node dist"
 	},
 	"keywords": [],
 	"author": "",
@@ -27,7 +29,8 @@
 		"multer": "1.4.5-lts.1",
 		"sharp": "^0.33.4",
 		"supertest": "^6.3.3",
-		"zod": "^3.22.4"
+		"zod": "^3.22.4",
+		"esbuild": "^0.20.1"
 	},
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^4.3.0",

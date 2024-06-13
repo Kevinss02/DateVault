@@ -7,6 +7,13 @@ settings:
 importers:
 
   .:
+    dependencies:
+      optional:
+        specifier: ^0.1.4
+        version: 0.1.4
+      sharp:
+        specifier: ^0.33.4
+        version: 0.33.4
     devDependencies:
       commitlint:
         specifier: ^19.3.0
