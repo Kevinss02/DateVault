@@ -33,12 +33,12 @@ const ImgCarousel: React.FC<ImgCarouselProps> = ({
 
   const handleImageDelete = (img: string) => {
     onClickDelete(img);
-    urls.filter((url, index) => index !== currentIndex);
+    urls.filter((_url, index) => index !== currentIndex);
     setCurrentIndex(0); // Reset to the first image after deletion
   };
 
   return (
-    <div className='group relative h-full w-full'>
+    <div className='group relative size-full'>
       <div className='relative h-full w-80'>
         <TiDelete
           size={deleteSize}
@@ -48,7 +48,7 @@ const ImgCarousel: React.FC<ImgCarouselProps> = ({
           }}
         />
         <img
-          src={`http://localhost:4000${urls[currentIndex]}`}
+          src={`${import.meta.env['VITE_BACKEND_URI']}${urls[currentIndex]}`}
           className='mx-auto h-80 w-60 select-none rounded-xl object-cover group-hover:shadow-2xl'
           alt='thumbnail'
         />
@@ -72,7 +72,7 @@ const ImgCarousel: React.FC<ImgCarouselProps> = ({
                 }}
                 className={`cursor-pointer p-1 ${
                   slideIndex === currentIndex
-                    ? 'text-4xl text-custom-purple'
+                    ? 'text-4xl'
                     : 'text-2xl text-white'
                 }`}
               >

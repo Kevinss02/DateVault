@@ -40,12 +40,12 @@ export const CardContainer: React.FC<CardContainerProps> = ({
     containerRef.current.style.transform = `rotateY(${x}deg) rotateX(${y}deg)`;
   };
 
-  const handleMouseEnter = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseEnter = (_e: React.MouseEvent<HTMLDivElement>) => {
     setIsMouseEntered(true);
     if (containerRef.current == null) return;
   };
 
-  const handleMouseLeave = (e: React.MouseEvent<HTMLDivElement>) => {
+  const handleMouseLeave = (_e: React.MouseEvent<HTMLDivElement>) => {
     if (containerRef.current == null) return;
     setIsMouseEntered(false);
     containerRef.current.style.transform = `rotateY(0deg) rotateX(0deg)`;
