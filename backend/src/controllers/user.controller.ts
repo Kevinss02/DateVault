@@ -11,12 +11,12 @@ type CustomJwtPayload = {
   id: string;
 };
 
-export const register = async function (
+export async function register(
   req: Request,
   res: Response,
 ): Promise<Response> {
   const { username, email, password, name }: UserData = req.body;
-
+  
   try {
     const result = await registerUser({ username, email, password, name });
     const { user, token } = result;

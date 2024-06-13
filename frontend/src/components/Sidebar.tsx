@@ -28,13 +28,13 @@ const defaultValue: SidebarContextProps = {
 };
 
 const SidebarContext = React.createContext<SidebarContextProps>(defaultValue);
-export const Sidebar: React.FC<SidebarProps> = ({
+export function Sidebar({
   children,
   className,
   logo,
   userName,
   email,
-}) => {
+}: SidebarProps) {
   const [expanded, setExpanded] = React.useState(false);
 
   return (
@@ -70,7 +70,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         <div className='flex border-t p-3'>
           <img
             src={`${logo ?? 'logo-pink.jpeg'}`}
-            className='h-12 w-12 rounded-full'
+            className='size-12 rounded-full'
             alt='`Profile picture'
           />
           <div
@@ -88,7 +88,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
       </nav>
     </aside>
   );
-};
+}
 
 export const SidebarItem: React.FC<SidebarItemProps> = ({
   icon,
@@ -122,7 +122,7 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
       </span>
       {(alert ?? false) && (
         <div
-          className={`absolute right-2 h-2 w-2 rounded bg-neutral-800 ${
+          className={`absolute right-2 size-2 rounded bg-neutral-800 ${
             expanded ?? false ? '' : 'top-2'
           }`}
         />

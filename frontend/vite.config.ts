@@ -4,6 +4,7 @@ import { defineConfig as defineVitestConfig } from 'vitest/config';
 
 const viteConfig = defineViteConfig({
   plugins: [react()],
+  envDir: '.'
 });
 
 const vitestConfig = defineVitestConfig({
