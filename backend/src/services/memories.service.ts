@@ -1,7 +1,6 @@
-import { Express, Request, Response } from 'express-serve-static-core';
-import fs from 'fs';
-import path from 'path';
+import { Express } from 'express-serve-static-core';
 
+import { deleteImage } from '../helpers/deleteImage.js';
 import Memory from '../models/memory.model.js';
 import { MemoryResponse, MemoryType } from '../utils/types/types.js';
 
@@ -46,7 +45,11 @@ export async function addMemory(
   const uploadedImages: string[] = [];
   if (Array.isArray(files)) {
     files.forEach((image: { filename: string }) => {
-      uploadedImages.push(`/uploads/${image.filename}`);
+      const fileNameWithoutExt = image.filename.substring(
+        0,
+        image.filename.lastIndexOf('.'),
+      );
+      uploadedImages.push(`/uploads/${fileNameWithoutExt}`);
     });
   }
 
@@ -71,7 +74,7 @@ export async function addMemory(
     imagesUrl: newMemory.imagesUrl,
     createdAt: newMemory.createdAt,
     updatedAt: newMemory.updatedAt,
-    id: newMemory._id.toString(),
+    _id: newMemory._id.toString(),
   };
 }
 
@@ -128,35 +131,9 @@ export async function deleteMemory(
     memory.imagesUrl.forEach((image) => {
       deleteImage(`./public/${image}`);
     });
-  }
-
-  if (memory == null) {
+  } else {
     throw new Error(`Memory with id ${id} not found`);
   }
 
   return memory;
-}
-
-const deleteImage = (imagePath: string): void => {
-  fs.unlink(imagePath, (err) => {
-    if (err != null) {
-      console.error(`Error al borrar la imagen: ${err.message}`);
-    } else {
-      console.log('Imagen borrada correctamente');
-    }
-  });
-};
-
-export function getImage(req: Request, res: Response): void {
-  console.log('A');
-  console.log('AAA', __dirname);
-  const imagePath = path.join(__dirname, '../public', req.params.imagePath);
-
-  fs.access(imagePath, fs.constants.F_OK, (err) => {
-    if (err != null) {
-      res.status(404).send('Image not found');
-    } else {
-      res.sendFile(imagePath);
-    }
-  });
 }

@@ -10,10 +10,14 @@ import { Sidebar, SidebarItem } from '../components/Sidebar';
 import { ParallaxScroll } from '../components/ui/parallax-scroll';
 import { useAuthStore } from '../store/authStore';
 import { useMemStore } from '../store/memStore';
+import { MemoryData, MemoryDataResponse } from '../types/types';
+import { formatDate } from '../utils/functions';
 
 function HomePage(): React.JSX.Element {
-  const { mems, loadMems, loadedMems } = useMemStore();
+  const { mems, loadMems, loadedMems, createMem } = useMemStore();
   const { user } = useAuthStore();
+
+  console.log('MEMS:', mems);
 
   React.useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
@@ -30,6 +34,29 @@ function HomePage(): React.JSX.Element {
 
   const navigate = useNavigate();
 
+  const handleCreateMemory = async (): Promise<void> => {
+    const memory: MemoryData = {
+      title: 'Insert Title',
+      description: 'Insert Description',
+      date: formatDate(new Date()),
+      feelings: 'good',
+      location: 'Insert Location',
+      imagesUrl: [],
+    };
+
+    try {
+      const newMem: MemoryDataResponse | undefined = await createMem(memory);
+      console.log(newMem);
+      if (newMem?._id != null) {
+        console.log(newMem);
+        navigate(`/vault/view/${newMem._id}`);
+      } else {
+        console.error('Error: Memory creation response does not contain _id');
+      }
+    } catch (error) {
+      console.error('Error creating memory:', error);
+    }
+  };
   return (
     <section className='custom-scrollbar flex min-h-screen min-w-min items-center justify-center bg-zinc-600'>
       <div className='absolute top-0 mt-[6%] h-[92%] w-[85%] rounded-2xl bg-zinc-600 opacity-45 mix-blend-multiply blur-2xl xl:mt-[3%] xl:h-[93%] 2xl:mt-[7%] 2xl:h-[75%]'></div>
@@ -51,10 +78,10 @@ function HomePage(): React.JSX.Element {
         </div>
         <AddButton
           title='Create New Memorie'
-          onClick={() => {
-            navigate('/vault/create');
-          }}
-          className='absolute -bottom-8 -right-7'
+          onClick={handleCreateMemory}
+          className={`absolute -bottom-8 -right-7 ${
+            loadedMems ? '' : 'hidden'
+          }`}
         />
       </div>
 
@@ -119,10 +146,8 @@ function HomePage(): React.JSX.Element {
 
           <AddButton
             title='Create New Memorie'
-            onClick={() => {
-              navigate('/vault/create');
-            }}
-            className='relative -top-2'
+            onClick={handleCreateMemory}
+            className={`relative -top-2`}
           />
         </div>
       </div>

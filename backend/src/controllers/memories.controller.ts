@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import fs from 'fs';
 import path from 'path';
 
+import { convertImage } from '../helpers/conversion.js';
 import { memorySchema } from '../schemas/memory.schema.js';
 import {
   addMemory,
@@ -101,6 +102,11 @@ export async function addMemoryController(
         'User and its user id must be declared in request params',
       );
     }
+    if (Array.isArray(req.files)) {
+      req.files.forEach((image: { path: string; filename: string }) => {
+        void convertImage(image.path, image.filename);
+      });
+    }
     const result = await addMemory(validMemory, user.id, req.files);
     return res.status(200).json(handleHttp('add', result));
   } catch (error) {
@@ -144,6 +150,13 @@ export async function updateMemoryController(
           'User and its user id must be declared in request params',
         );
       }
+
+      if (Array.isArray(req.files)) {
+        req.files.forEach((image: { path: string; filename: string }) => {
+          void convertImage(image.path, image.filename);
+        });
+      }
+
       const result = await updateMemory(id, validMemory, user.id, req.files);
       return res.status(200).json(handleHttp('update', result));
     } else {
@@ -237,8 +250,6 @@ export async function getImageController(
 
     const imagePath = `/uploads/${id}`;
 
-    console.log(imagePath);
-
     if (imagePath.length === 0) {
       return res
         .status(400)
@@ -260,6 +271,76 @@ export async function getImageController(
           }
         });
       }
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ message: error.message });
+    } else {
+      return res
+        .status(500)
+        .json({ message: `Undefined error: ${error as string}` });
+    }
+  }
+}
+
+export async function deleteImageController(
+  req: Request,
+  res: Response,
+): Promise<Response | undefined> {
+  try {
+    const { id } = req.params;
+
+    const imagePath = `/uploads/${id}`;
+    const imageName = id.split('.')[0]; // Extract the name without extension
+
+    if (imageName.length === 0) {
+      return res
+        .status(400)
+        .json({ message: 'Image name is required as a parameter' });
+    }
+
+    if (imagePath.length === 0) {
+      return res
+        .status(400)
+        .json({ message: 'Image path is required as a parameter' });
+    }
+
+    const dirname = process.cwd();
+    const uploadDir = path.join(dirname, '/public/uploads');
+
+    fs.readdir(uploadDir, (err, files) => {
+      if (err != null) {
+        return res
+          .status(500)
+          .json({ message: 'Error reading upload directory' });
+      }
+
+      const filesToDelete = files.filter((file) => file.startsWith(imageName));
+
+      if (filesToDelete.length === 0) {
+        return res.status(404).json({ message: 'No matching images found' });
+      }
+
+      let deleteCount = 0;
+      let errorOccurred = false;
+
+      filesToDelete.forEach((file) => {
+        fs.unlink(path.join(uploadDir, file), (err) => {
+          if (err != null && !errorOccurred) {
+            errorOccurred = true;
+            return res
+              .status(500)
+              .json({ message: `Error deleting image: ${file}` });
+          } else {
+            deleteCount++;
+            if (deleteCount === filesToDelete.length && !errorOccurred) {
+              return res
+                .status(200)
+                .json({ message: 'All matching images deleted successfully' });
+            }
+          }
+        });
+      });
     });
   } catch (error) {
     if (error instanceof Error) {

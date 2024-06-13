@@ -2,7 +2,13 @@ import { AxiosError } from 'axios';
 import { shallow } from 'zustand/shallow';
 import { createWithEqualityFn } from 'zustand/traditional';
 
-import { addMem, deleteMem, editMem, getMems } from '../api/memRequest';
+import {
+  addMem,
+  deleteImg,
+  deleteMem,
+  editMem,
+  getMems,
+} from '../api/memRequest';
 import { MemoryData, type MemoryDataResponse } from '../types/types';
 
 export type MemState = {
@@ -10,9 +16,10 @@ export type MemState = {
   memErrors: string[];
   loadedMems: boolean;
   loadMems: () => Promise<void>;
-  createMem: (mem: MemoryData) => Promise<void>;
+  createMem: (mem: MemoryData) => Promise<MemoryDataResponse | undefined>;
   editMem: (mem: MemoryData & { images?: any }, id: string) => Promise<void>;
   deleteMem: (id: string) => Promise<void>;
+  deleteImg: (img: string) => Promise<void>;
 };
 
 export const useMemStore = createWithEqualityFn<MemState>(
@@ -24,7 +31,11 @@ export const useMemStore = createWithEqualityFn<MemState>(
       try {
         const res = await getMems();
 
-        set({ mems: res.output, loadedMems: true });
+        if (res.output.length === 0) {
+          set({ mems: res.output, loadedMems: false });
+        } else {
+          set({ mems: res.output, loadedMems: true });
+        }
       } catch (error) {
         if (error instanceof AxiosError) {
           const errorParsed = error.response?.data;
@@ -35,7 +46,9 @@ export const useMemStore = createWithEqualityFn<MemState>(
       }
     },
 
-    createMem: async function (mem: MemoryData): Promise<void> {
+    createMem: async function (
+      mem: MemoryData,
+    ): Promise<MemoryDataResponse | undefined> {
       try {
         const res = await addMem(mem);
         set((state) => ({
@@ -45,14 +58,18 @@ export const useMemStore = createWithEqualityFn<MemState>(
               : [res.output],
           loadedMems: true,
         }));
+        return res.output;
       } catch (error) {
         if (error instanceof AxiosError) {
           const errorParsed = error.response?.data;
           set((state: MemState) => ({
             memErrors: [...state.memErrors, errorParsed?.error],
           }));
+
+          return undefined;
         }
       }
+      return undefined;
     },
 
     editMem: async function (
@@ -60,7 +77,6 @@ export const useMemStore = createWithEqualityFn<MemState>(
       id: string,
     ): Promise<void> {
       try {
-        console.log('MEMMM', mem.images);
         const res = await editMem(mem, id);
 
         if (res != null) {
@@ -85,6 +101,18 @@ export const useMemStore = createWithEqualityFn<MemState>(
           const resGet = await getMems();
           set({ mems: resGet.output, loadedMems: true });
         }
+      } catch (error) {
+        if (error instanceof AxiosError) {
+          const errorParsed = error.response?.data;
+          set((state) => ({
+            memErrors: [...state.memErrors, errorParsed?.error],
+          }));
+        }
+      }
+    },
+    deleteImg: async function (img: string): Promise<void> {
+      try {
+        await deleteImg(img);
       } catch (error) {
         if (error instanceof AxiosError) {
           const errorParsed = error.response?.data;

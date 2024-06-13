@@ -1,10 +1,9 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import type React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import './App.css';
 import ProtectedRoute from './ProtectedRoute';
-import HomePage from './pages/HomePage';
 import MemoryForm from './pages/MemoryForm';
 import MemoryView from './pages/MemoryViewPage';
 import NotFoundPage from './pages/NotFoundPage';
@@ -18,7 +17,7 @@ function App(): React.JSX.Element {
     <BrowserRouter>
       <Routes>
         {/* Public routes */}
-        <Route path='/' element={<HomePage />} />
+        <Route path='/' element={<Navigate to='/vault' />} />
         <Route path='/sign-in' element={<SignInPage />} />
         <Route path='/sign-up' element={<SignUpPage />} />
         <Route path='/test' element={<TestPage />} />
@@ -32,6 +31,9 @@ function App(): React.JSX.Element {
           <Route path='/vault/edit/:id' element={<MemoryForm />} />
           <Route path='/vault/view/:id' element={<MemoryView />} />
         </Route>
+
+        {/* Fallback route */}
+        <Route path='*' element={<NotFoundPage />} />
       </Routes>
     </BrowserRouter>
   );

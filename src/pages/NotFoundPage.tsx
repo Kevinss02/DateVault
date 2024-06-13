@@ -8,7 +8,7 @@ function NotFoundPage(): React.JSX.Element {
 
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   const handleBackHomeClick = () => {
-    navigate('/');
+    navigate('/vault');
   };
   return (
     <section className='flex min-h-screen min-w-min items-center justify-center bg-zinc-600'>
@@ -27,7 +27,7 @@ function NotFoundPage(): React.JSX.Element {
 
         <CuteButton
           onClick={handleBackHomeClick}
-          className='font-cute relative -right-96 top-48 ms-5 mt-30 w-1/6  border-4 border-black text-xl'
+          className='font-cute relative -right-96 top-48 ms-5 mt-30 !w-1/6 border-4 border-black text-xl'
         >
           Back Home
         </CuteButton>

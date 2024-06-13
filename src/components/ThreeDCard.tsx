@@ -54,7 +54,7 @@ const ThreeDCard: React.FC<CardProps> = ({
             translateZ='100'
             rotateX={20}
             rotateZ={-5}
-            className={`mt-4 flex w-full items-center justify-center ${
+            className={`mt-4 flex h-full w-full  items-center justify-center ${
               data.imagesUrl.length === 0 ? 'hidden' : ''
             }`}
           >
@@ -67,7 +67,7 @@ const ThreeDCard: React.FC<CardProps> = ({
           <CardItem
             as='p'
             translateZ='60'
-            className='max-w-sm truncate text-sm text-neutral-500 dark:text-neutral-300'
+            className='mt-2 max-w-sm truncate text-sm text-neutral-500 dark:text-neutral-300'
           >
             {data.location}
           </CardItem>

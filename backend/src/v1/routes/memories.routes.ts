@@ -2,6 +2,7 @@ import { Router } from 'express';
 
 import {
   addMemoryController,
+  deleteImageController,
   deleteMemoryController,
   getImageController,
   getMemoriesController,
@@ -29,6 +30,7 @@ memoriesRouter
     updateMemoryController,
   )
   .delete(`/memories/:id`, authRequired, deleteMemoryController)
-  .get('/uploads/:id', authRequired, getImageController);
+  .get('/uploads/:id', authRequired, getImageController)
+  .delete('/uploads/:id', authRequired, deleteImageController);
 
 export default memoriesRouter;

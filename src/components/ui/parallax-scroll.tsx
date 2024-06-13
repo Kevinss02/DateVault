@@ -44,10 +44,13 @@ export const ParallaxScroll = ({
 
   return (
     <div
-      className={cn('h-[40rem] items-start overflow-y-auto w-full', className)}
+      className={cn(
+        'h-[40rem] items-start py-6 overflow-y-auto w-full',
+        className,
+      )}
       ref={gridRef}
     >
-      <h1 className='font-cute my-5 select-none text-5xl font-bold tracking-widest text-zinc-600'>
+      <h1 className='font-cute mb-5 mt-3 select-none text-5xl font-bold tracking-widest text-zinc-600'>
         {title}
       </h1>
 
@@ -67,7 +70,7 @@ export const ParallaxScroll = ({
                 onClick={(id: string) => {
                   navigate(`/vault/view/${id}`);
                 }}
-                className='!m-0 w-full max-w-xs gap-10 overflow-hidden rounded-lg object-cover object-left-top !p-0'
+                className='!m-0 w-full max-w-xs gap-10 rounded-lg object-cover object-left-top !p-0'
               />
             </motion.div>
           ))}

@@ -21,7 +21,7 @@ export type mongoCustomError = {
 export type MemoryType = z.TypeOf<typeof memorySchema>;
 
 export type MemoryResponse = MemoryType & {
-  id: string;
+  _id: string;
   createdAt: Date;
   updatedAt: Date;
 };

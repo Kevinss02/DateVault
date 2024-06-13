@@ -1,19 +1,22 @@
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
+import { config } from 'dotenv';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
 // import multer from 'multer';
 import path from 'path';
 
+import { FRONTEND_URI } from './config.js';
 import memoriesRouter from './v1/routes/memories.routes.js';
 import userRouter from './v1/routes/user.routes.js';
 
 const app: Express = express();
+config();
 
 // middlewares
 app.use(
   cors({
-    origin: 'http://localhost:5173',
+    origin: FRONTEND_URI,
     credentials: true,
   }),
 );

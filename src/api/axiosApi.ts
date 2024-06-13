@@ -1,9 +1,7 @@
 import axios from 'axios';
 
-import { API } from '../config';
-
 const api = axios.create({
-  baseURL: API,
+  baseURL: import.meta.env['BACKEND_URI'],
   withCredentials: true,
 });
 

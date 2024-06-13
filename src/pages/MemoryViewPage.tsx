@@ -8,6 +8,7 @@ import ImgCarousel from '../components/ImgCarousel';
 import TipTap from '../components/Tiptap';
 import { useMemStore } from '../store/memStore';
 import { MemoryDataResponse } from '../types/types';
+import { htmlToPlainText } from '../utils/functions';
 
 function MemoryView(): React.JSX.Element {
   const [memory, setMemory] = React.useState<MemoryDataResponse>({
@@ -25,7 +26,7 @@ function MemoryView(): React.JSX.Element {
   const navigate = useNavigate();
   const params = useParams();
 
-  const { mems, deleteMem, editMem } = useMemStore();
+  const { mems, deleteMem, editMem, deleteImg, loadMems } = useMemStore();
 
   const [uploaded, setUploaded] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
@@ -38,6 +39,16 @@ function MemoryView(): React.JSX.Element {
   const handleEdit = () => {
     setIsEditing(true);
   };
+
+  React.useEffect(() => {
+    if (params['id'] != null) {
+      const newMem = mems?.find((mem) => mem._id === params['id']) ?? undefined;
+      if (newMem == null) {
+        console.log('Load');
+        void loadMems();
+      }
+    }
+  }, [loadMems, mems, params]);
 
   React.useEffect(() => {
     if (params['id'] != null) {
@@ -82,21 +93,46 @@ function MemoryView(): React.JSX.Element {
   const handleImageDelete = (img: string) => {
     if (img != null) {
       try {
-        void editMem(
-          { ...memory, imagesUrl: memory.imagesUrl.filter((i) => i !== img) },
-          memory._id,
-        );
-        setUploaded(true);
+        const newImagesUrl = memory.imagesUrl.filter((i) => i !== img);
+        void editMem({ ...memory, imagesUrl: newImagesUrl }, memory._id);
+        void deleteImg(img);
+        if (newImagesUrl.length === 0) {
+          setUploaded(false);
+        } else {
+          setUploaded(true);
+        }
       } catch (error) {
         console.error('Error al subir la imagen:', error);
-        setUploaded(false);
       }
     }
   };
 
+  const handleSaveTitle = (title: string) => {
+    const newTitle = htmlToPlainText(title);
+    setMemory((prevMemory) => {
+      void editMem({ ...prevMemory, title: newTitle }, prevMemory._id);
+      return { ...prevMemory, title: newTitle };
+    });
+  };
+
+  const handleSaveDate = (date: string) => {
+    const newDate = htmlToPlainText(date);
+    setMemory((prevMemory) => {
+      void editMem({ ...prevMemory, date: newDate }, prevMemory._id);
+      return { ...prevMemory, date: newDate };
+    });
+  };
+
+  const handleSaveLocation = (location: string) => {
+    const newLocation = htmlToPlainText(location);
+    setMemory((prevMemory) => {
+      void editMem({ ...prevMemory, location: newLocation }, prevMemory._id);
+      return { ...prevMemory, location: newLocation };
+    });
+  };
+
   const handleSaveDescription = (newDescription: string) => {
     setMemory((prevMemory) => {
-      // Actualizar el estado y luego realizar acciones después de que el estado se haya actualizado
       void editMem(
         { ...prevMemory, description: newDescription },
         prevMemory._id,
@@ -106,18 +142,35 @@ function MemoryView(): React.JSX.Element {
   };
 
   return (
-    <section className='relative flex min-h-[100vh] w-full min-w-min items-center justify-center overflow-hidden bg-zinc-600'>
+    <section className='custom-scrollbar relative flex min-h-[100vh] w-full min-w-min items-center justify-center overflow-hidden bg-zinc-600'>
       <div className='absolute top-0 mt-[6%] h-[92%] w-[85%] rounded-2xl bg-zinc-600 opacity-45 mix-blend-multiply blur-2xl xl:mt-[3%] xl:h-[93%] 2xl:mt-[7%] 2xl:h-[75%]'></div>
 
       <div className='relative m-5 flex h-screen w-full min-w-min rounded-3xl bg-neutral-900 p-4 shadow-xl sm:p-20'>
         <div className='flex w-2/3 flex-col overflow-y-auto rounded-l-3xl bg-neutral-800 text-slate-200'>
-          <div className='font-cute mt-12 flex justify-between italic tracking-wide text-slate-200'>
-            <p className='mx-auto text-4xl capitalize'>{memory.title}</p>
-            <p className='me-5 mt-2 text-base'>{memory.date}</p>
+          <div className='font-cute mx-auto mt-12 flex justify-between italic tracking-wide text-slate-200'>
+            <TipTap
+              edit={isEditing}
+              toolbar={false}
+              description={memory.title}
+              onChange={handleSaveTitle}
+              className='font-cute mx-auto text-4xl capitalize'
+            />
+            <TipTap
+              edit={isEditing}
+              toolbar={false}
+              description={memory.date}
+              onChange={handleSaveDate}
+              className='font-cute relative start-full text-lg'
+            />
           </div>
-          <p className='font-cute mt-3 capitalize italic tracking-wide'>
-            {memory.location}
-          </p>
+
+          <TipTap
+            edit={isEditing}
+            toolbar={false}
+            description={memory.location}
+            onChange={handleSaveLocation}
+            className='font-cute mt-3 flex justify-center capitalize italic tracking-wide'
+          />
           <div className='font-magic mt-10 text-slate-200'>
             <TipTap
               edit={isEditing}
@@ -127,9 +180,10 @@ function MemoryView(): React.JSX.Element {
               toolbarClassName='text-neutral-800 bg-white rounded-lg mb-3'
             />
           </div>
-          {/* Botones Save y Delete al final del contenedor */}
 
-          <div className='font-cute sticky  bottom-5 mx-auto bg-neutral-800 mt-5 flex  h-10 select-none justify-between gap-5 text-white'>
+          {/* Edit / Save & Delete */}
+          <div className='grow'></div>
+          <div className='font-cute sticky bottom-5 mx-auto mt-5 flex h-10  select-none justify-between gap-5 bg-neutral-800 text-white'>
             <button
               onClick={() => {
                 isEditing ? setIsEditing(false) : handleEdit();

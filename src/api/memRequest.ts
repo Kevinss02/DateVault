@@ -13,6 +13,15 @@ export const getMems = async function (): Promise<
   return response.data;
 };
 
+export const getMem = async function (
+  id: string,
+): Promise<ResponseType<MemoryDataResponse[]>> {
+  const response = await api.get<ResponseType<MemoryDataResponse[]>>(
+    `/memories/:${id}`,
+  );
+  return response.data;
+};
+
 export const addMem = async function (
   memData: MemoryData,
 ): Promise<ResponseType<MemoryDataResponse>> {
@@ -43,5 +52,12 @@ export const deleteMem = async function (
   id: string,
 ): Promise<ResponseType<string>> {
   const response = await api.delete<ResponseType<string>>(`/memories/${id}`);
+  return response.data;
+};
+
+export const deleteImg = async function (
+  img: string,
+): Promise<ResponseType<string>> {
+  const response = await api.delete<ResponseType<string>>(`${img}`);
   return response.data;
 };

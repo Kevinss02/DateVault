@@ -18,6 +18,7 @@ type TipTapProps = {
   edit: boolean;
   className?: string;
   toolbarClassName?: string;
+  toolbar?: boolean;
 };
 
 const TipTap: React.FC<TipTapProps> = ({
@@ -26,12 +27,17 @@ const TipTap: React.FC<TipTapProps> = ({
   edit,
   className,
   toolbarClassName,
+  toolbar,
 }) => {
   const replaceSpacesAndLineBreaks = (html: string): string => {
     return html
       .replace(/(?![^<]*>|[^<>]*<\/)(\s)/g, '&nbsp;')
       .replace(/<p>(\s*)<\/p>/g, '<p>\u200B</p>'); // Reemplazar párrafos vacíos entre otros elementos por un solo salto de línea con un carácter invisible
   };
+
+  if (toolbar == null) {
+    toolbar = true;
+  }
 
   const editor = useEditor({
     extensions: [
@@ -60,7 +66,7 @@ const TipTap: React.FC<TipTapProps> = ({
     content: description,
     editorProps: {
       attributes: {
-        class: 'min-h-[150px] bg-transparent  select-none',
+        class: 'bg-transparent select-none px-2 py-1',
       },
     },
     onUpdate({ editor }) {
@@ -86,10 +92,16 @@ const TipTap: React.FC<TipTapProps> = ({
   return (
     <div>
       {edit ? (
-        <div className={className}>
-          <TipTapToolbar editor={editor} className={toolbarClassName ?? ''} />
-          <EditorContent editor={editor} />
-        </div>
+        toolbar ? (
+          <div className={className}>
+            <TipTapToolbar editor={editor} className={toolbarClassName ?? ''} />
+            <EditorContent editor={editor} />
+          </div>
+        ) : (
+          <div className={className}>
+            <EditorContent editor={editor} className='' />
+          </div>
+        )
       ) : (
         <div>
           <div
