@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 import { BsFillArrowThroughHeartFill } from 'react-icons/bs';
-import { useNavigate } from 'react-router-dom';
 
 import { AuthState, useAuthStore } from '../store/authStore';
 import { UserLoginData } from '../types/types';
