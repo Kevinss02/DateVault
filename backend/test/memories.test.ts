@@ -86,7 +86,7 @@ describe('create memories', () => {
       })
       .expect(200);
 
-    memoryId = response.body.output.id;
+    memoryId = response.body.output._id;
 
     expect(response.body).toEqual({
       type: 'add',

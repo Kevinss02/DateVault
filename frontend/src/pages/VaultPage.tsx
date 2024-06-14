@@ -18,6 +18,7 @@ function HomePage(): React.JSX.Element {
   const { user } = useAuthStore();
 
   console.log('MEMS:', mems);
+  console.log('User', user);
 
   React.useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
