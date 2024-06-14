@@ -46,20 +46,6 @@ function SignInForm({ className }: SignInFormProps): React.JSX.Element {
     clearSignInErrors((error) => !error.includes('password'));
   }, [passwordValue, clearSignInErrors]);
 
-  React.useEffect(() => {
-    if (isAuthenticated) {
-      const timer = setTimeout(() => {
-        navigate('/vault');
-      }, 1500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }
-
-    return undefined;
-  }, [isAuthenticated, navigate]);
-
   return (
     <form
       className={`font-cute mx-auto w-full max-w-[90%] text-neutral-300  lg:max-w-sm ${
