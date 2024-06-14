@@ -64,7 +64,7 @@ describe('register', () => {
     });
   });
 
-  it('should register user successfuly', async () => {
+  it('should register user successfully', async () => {
     const response = await request(app)
       .post('/register')
       .send({

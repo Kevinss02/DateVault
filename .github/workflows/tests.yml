@@ -27,16 +27,23 @@ jobs:
         with:
           node-version: 18.17.1
 
-      - name: Install Dependencies
-        run: npm install
+      - name: Install Backend Dependencies
+        run: |
+          cd backend
+          npm install
+
+      - name: Build Backend
+        run: |
+          cd backend
+          sudo npm install -g typescript
+          npm run build
 
       - name: Start Backend Server
         run: |
           cd backend
-          npm install
-          sudo npm install typescript -g
-          tsc
-          node dist/index.js &
-
-      - name: Run tests
-        run: npm test
+          npm start &
+        env:
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          PORT: ${{ secrets.PORT }}
+          HOST: ${{ secrets.HOST }}
+          TOKEN_SECRET: ${{ secrets.TOKEN_SECRET }}

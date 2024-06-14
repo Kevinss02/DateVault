@@ -11,12 +11,9 @@ type CustomJwtPayload = {
   id: string;
 };
 
-export async function register(
-  req: Request,
-  res: Response,
-): Promise<Response> {
+export async function register(req: Request, res: Response): Promise<Response> {
   const { username, email, password, name }: UserData = req.body;
-  
+
   try {
     const result = await registerUser({ username, email, password, name });
     const { user, token } = result;
@@ -33,6 +30,7 @@ export async function register(
       secure: true,
       sameSite: 'none',
     });
+
     return res.status(201).json(handleHttp('registerUser', userDataResponse));
   } catch (error) {
     console.error('Registration error:', error);
@@ -72,7 +70,7 @@ export async function register(
         );
     }
   }
-};
+}
 
 export const login = async function (
   req: Request,

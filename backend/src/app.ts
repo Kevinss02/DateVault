@@ -3,8 +3,6 @@ import cors from 'cors';
 import { config } from 'dotenv';
 import express, { type Express } from 'express';
 import morgan from 'morgan';
-// import multer from 'multer';
-import path from 'path';
 
 import { FRONTEND_URI } from './config.js';
 import memoriesRouter from './v1/routes/memories.routes.js';
@@ -23,11 +21,6 @@ app.use(
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cookieParser());
-
-const filename = new URL(import.meta.url).pathname;
-const dirname = path.dirname(filename);
-
-app.use('/public', express.static(path.join(dirname, 'storage', 'imgs')));
 
 app.use(userRouter);
 app.use(memoriesRouter);
