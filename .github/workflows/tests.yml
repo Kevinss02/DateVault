@@ -27,11 +27,6 @@ jobs:
         with:
           node-version: 18.17.1
 
-      - name: Install Frontend Dependencies
-        run: |
-          cd frontend
-          npm install
-
       - name: Install Backend Dependencies
         run: |
           cd backend
