@@ -59,7 +59,7 @@ const ThreeDCard: React.FC<CardProps> = ({
             }`}
           >
             <img
-              src={`${import.meta.env['VITE_BACKEND_URI']}${data.imagesUrl[0]}`}
+              src={``}
               className={`select-none rounded-xl object-cover group-hover/card:shadow-xl ${className}`}
               alt='thumbnail'
             />
