@@ -19,15 +19,14 @@ function SignInForm({ className }: SignInFormProps): React.JSX.Element {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const { signIn, signInErrors, clearSignInErrors, isAuthenticated } =
-    useAuthStore((state: AuthState) => ({
+  const { signIn, signInErrors, clearSignInErrors } = useAuthStore(
+    (state: AuthState) => ({
       signIn: state.signIn,
       signInErrors: state.signInErrors,
       clearSignInErrors: state.clearSignInErrors,
       isAuthenticated: state.isAuthenticated,
-    }));
-
-  const navigate = useNavigate();
+    }),
+  );
 
   const onSubmit: SubmitHandler<FieldValues> = async function (
     values: FieldValues,
