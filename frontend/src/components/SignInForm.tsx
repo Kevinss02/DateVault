@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { type FieldValues, type SubmitHandler, useForm } from 'react-hook-form';
 import { BsFillArrowThroughHeartFill } from 'react-icons/bs';
+import { useNavigate } from 'react-router-dom';
 
 import { AuthState, useAuthStore } from '../store/authStore';
 import { UserLoginData } from '../types/types';
@@ -18,14 +19,15 @@ function SignInForm({ className }: SignInFormProps): React.JSX.Element {
     formState: { errors },
   } = useForm<FieldValues>();
 
-  const { signIn, signInErrors, clearSignInErrors } = useAuthStore(
-    (state: AuthState) => ({
+  const { signIn, signInErrors, clearSignInErrors, isAuthenticated } =
+    useAuthStore((state: AuthState) => ({
       signIn: state.signIn,
       signInErrors: state.signInErrors,
       clearSignInErrors: state.clearSignInErrors,
       isAuthenticated: state.isAuthenticated,
-    }),
-  );
+    }));
+
+  const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<FieldValues> = async function (
     values: FieldValues,
@@ -43,6 +45,20 @@ function SignInForm({ className }: SignInFormProps): React.JSX.Element {
   React.useEffect(() => {
     clearSignInErrors((error) => !error.includes('password'));
   }, [passwordValue, clearSignInErrors]);
+
+  React.useEffect(() => {
+    if (isAuthenticated) {
+      const timer = setTimeout(() => {
+        navigate('/vault');
+      }, 1500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+
+    return undefined;
+  }, [isAuthenticated, navigate]);
 
   return (
     <form
